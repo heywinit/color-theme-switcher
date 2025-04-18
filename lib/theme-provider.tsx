@@ -1,5 +1,5 @@
 /**
- * Theme provider for the Color Theme Switcher.
+ * Theme provider for ColorSwitchCN.
  * Implementation inspired by and compatible with TweakCN (https://tweakcn.com) by Sahaj (https://github.com/jnsahaj).
  */
 "use client";

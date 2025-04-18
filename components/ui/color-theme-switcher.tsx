@@ -1,5 +1,5 @@
 /**
- * Color Theme Switcher Component
+ * ColorSwitchCN Component
  * Inspired by and compatible with TweakCN (https://tweakcn.com) by Sahaj (https://github.com/jnsahaj)
  */
 "use client";

@@ -1,4 +1,4 @@
-# Color Theme Switcher for ShadCN
+# ColorSwitchCN
 
 A comprehensive color theme switcher component for ShadCN UI. This component allows users to toggle between light and dark modes and select from a variety of predefined color schemes.
 
@@ -33,7 +33,7 @@ pnpm add @radix-ui/react-dropdown-menu @radix-ui/react-slot lucide-react
 1. Import the Color Theme Switcher component:
 
 ```tsx
-import { ColorThemeSwitcher } from "@/components/ui/color-theme-switcher";
+import { ColorThemeSwitcher } from "colorswitchcn";
 ```
 
 2. Use it in your application:

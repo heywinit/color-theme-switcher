@@ -1,5 +1,5 @@
 {
-	"name": "color-theme-switcher",
+	"name": "colorswitchcn",
 	"version": "0.1.0",
 	"description": "A shadcn/ui color theme switcher for your website compatible with tweakcn.com themes. Inspired by and compatible with TweakCN by Sahaj (https://github.com/jnsahaj).",
 	"private": false,

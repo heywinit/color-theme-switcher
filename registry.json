@@ -4,9 +4,9 @@
 	"homepage": "https://acme.com",
 	"items": [
 		{
-			"name": "color-theme-switcher",
+			"name": "colorswitchcn",
 			"type": "registry:component",
-			"title": "Color Theme Switcher",
+			"title": "ColorSwitchCN",
 			"description": "A comprehensive theme switcher with light/dark mode and color scheme support",
 			"registryDependencies": ["button", "card"],
 			"files": [

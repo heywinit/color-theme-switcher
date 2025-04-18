@@ -1,5 +1,5 @@
 /**
- * Theme presets and styles for the Color Theme Switcher.
+ * Theme presets and styles for ColorSwitchCN.
  * Inspired by and compatible with TweakCN (https://tweakcn.com) by Sahaj (https://github.com/jnsahaj).
  * TweakCN is a powerful Visual Theme Editor for tailwind CSS & shadcn/ui components.
  */
