@@ -16,20 +16,50 @@ export interface UseThemeSwitchOptions {
 	disableTransition?: boolean;
 	syncThemes?: boolean; // Whether to sync themes with tweakcn
 	syncBaseUrl?: string; // Base URL for the tweakcn API
+	syncInterval?: number; // Interval in hours for theme sync
+}
+
+// Function to load user sync settings for convenience
+function loadUserSyncSettings() {
+	if (typeof window === "undefined") {
+		return {
+			syncEnabled: true,
+			syncInterval: 24,
+			syncBaseUrl: "https://tweakcn.com",
+		};
+	}
+
+	const autoSync = localStorage.getItem("theme-auto-sync");
+	const syncInterval = localStorage.getItem("theme-sync-interval");
+	const syncUrl = localStorage.getItem("theme-sync-url");
+
+	return {
+		syncEnabled: autoSync === null ? true : autoSync === "true",
+		syncInterval: syncInterval ? Number.parseInt(syncInterval, 10) : 24,
+		syncBaseUrl: syncUrl || "https://tweakcn.com",
+	};
 }
 
 export function useThemeSwitch({
 	defaultPreset = "default",
 	transitionOptions = { type: "fade", duration: 300, easing: "ease-in-out" },
 	disableTransition = false,
-	syncThemes = true,
-	syncBaseUrl = "https://tweakcn.com",
+	syncThemes, // Make this undefined by default to respect user setting
+	syncBaseUrl,
+	syncInterval,
 }: UseThemeSwitchOptions = {}) {
 	// Use next-themes for base theme functionality
 	const { theme, setTheme, resolvedTheme } = useTheme();
 
 	// Track if we've already initialized to prevent infinite updates
 	const hasInitialized = useRef(false);
+
+	// Get user sync settings
+	const userSyncSettings = useMemo(() => loadUserSyncSettings(), []);
+
+	// Determine if we should sync based on explicit prop or user preference
+	const shouldSync =
+		syncThemes !== undefined ? syncThemes : userSyncSettings.syncEnabled;
 
 	// Sync themes with tweakcn if enabled
 	const {
@@ -38,8 +68,9 @@ export function useThemeSwitch({
 		lastSyncTime,
 		syncThemes: triggerSync,
 	} = useThemeSync({
-		syncOnMount: syncThemes,
-		baseUrl: syncBaseUrl,
+		syncOnMount: shouldSync,
+		baseUrl: syncBaseUrl || userSyncSettings.syncBaseUrl,
+		updateInterval: syncInterval || userSyncSettings.syncInterval,
 	});
 
 	// Use a safe initial state for server rendering
@@ -201,6 +232,9 @@ export function useThemeSwitch({
 		syncStatus: {
 			isSyncing,
 			lastSyncTime,
+			syncEnabled: shouldSync,
+			syncInterval: syncInterval || userSyncSettings.syncInterval,
+			syncBaseUrl: syncBaseUrl || userSyncSettings.syncBaseUrl,
 		},
 		syncThemes: triggerSync,
 	};

@@ -130,3 +130,66 @@ export function shouldUpdateThemes(
 
 	return hoursSinceUpdate > updateIntervalInHours;
 }
+
+/**
+ * Save user's sync settings to local storage
+ *
+ * @param settings The user's sync settings
+ */
+export function saveUserSyncSettings({
+	autoSync,
+	syncInterval,
+	syncUrl,
+}: {
+	autoSync?: boolean;
+	syncInterval?: number;
+	syncUrl?: string;
+}): void {
+	try {
+		if (autoSync !== undefined) {
+			localStorage.setItem("theme-auto-sync", String(autoSync));
+		}
+
+		if (syncInterval !== undefined) {
+			localStorage.setItem("theme-sync-interval", String(syncInterval));
+		}
+
+		if (syncUrl !== undefined) {
+			localStorage.setItem("theme-sync-url", syncUrl);
+		}
+	} catch (error) {
+		console.error("Error saving sync settings:", error);
+	}
+}
+
+/**
+ * Apply theme sync settings
+ *
+ * Applies the user's theme sync settings and optionally triggers an immediate sync
+ *
+ * @param settings The sync settings to apply
+ * @param syncFunction Optional function to trigger an immediate sync
+ */
+export function applyThemeSyncSettings({
+	autoSync,
+	syncInterval,
+	syncUrl,
+	syncNow = false,
+	syncFunction,
+}: {
+	autoSync?: boolean;
+	syncInterval?: number;
+	syncUrl?: string;
+	syncNow?: boolean;
+	syncFunction?: () => Promise<void>;
+}): void {
+	// Save settings
+	saveUserSyncSettings({ autoSync, syncInterval, syncUrl });
+
+	// Trigger sync if requested
+	if (syncNow && syncFunction) {
+		syncFunction().catch((err) => {
+			console.error("Error during immediate sync:", err);
+		});
+	}
+}

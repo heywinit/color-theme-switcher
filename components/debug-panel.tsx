@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import { useTheme } from "@/lib/theme-provider";
-import { quickApplyTheme } from "@/lib/fix-global-css";
 import { Button } from "@/components/ui/button";
 
 export function DebugPanel() {
@@ -39,25 +38,6 @@ export function DebugPanel() {
 			</Button>
 		);
 	}
-
-	const forceApplyTheme = () => {
-		console.log("Forcing theme application");
-		quickApplyTheme(themeState);
-
-		// Refresh CSS vars
-		const styles = getComputedStyle(document.documentElement);
-		const vars = {
-			"--background": styles.getPropertyValue("--background"),
-			"--foreground": styles.getPropertyValue("--foreground"),
-			"--primary": styles.getPropertyValue("--primary"),
-			"--secondary": styles.getPropertyValue("--secondary"),
-			"--accent": styles.getPropertyValue("--accent"),
-			"--muted": styles.getPropertyValue("--muted"),
-		};
-
-		setCssVars(vars);
-	};
-
 	return (
 		<div className="fixed bottom-4 right-4 z-50 p-4 bg-card border shadow-lg rounded-lg w-80 max-h-96 overflow-auto">
 			<div className="flex justify-between items-center mb-2">
@@ -85,12 +65,6 @@ export function DebugPanel() {
 							<span className="font-mono truncate">{value || "<empty>"}</span>
 						</div>
 					))}
-				</div>
-
-				<div className="flex flex-col gap-2 mt-4">
-					<Button size="sm" onClick={forceApplyTheme}>
-						Force Apply Theme
-					</Button>
 				</div>
 			</div>
 		</div>

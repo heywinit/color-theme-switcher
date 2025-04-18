@@ -55,11 +55,54 @@ interface UseThemeSyncResult {
 	syncThemes: () => Promise<void>;
 }
 
+// Load user preferences from localStorage
+function loadUserPreferences(): {
+	autoSync: boolean;
+	syncInterval: number;
+	baseUrl: string;
+} {
+	if (typeof window === "undefined") {
+		return {
+			autoSync: true,
+			syncInterval: 24,
+			baseUrl: "https://tweakcn.com",
+		};
+	}
+
+	try {
+		const autoSync = localStorage.getItem("theme-auto-sync");
+		const syncInterval = localStorage.getItem("theme-sync-interval");
+		const baseUrl = localStorage.getItem("theme-sync-url");
+
+		return {
+			autoSync: autoSync === null ? true : autoSync === "true",
+			syncInterval: syncInterval ? Number.parseInt(syncInterval, 10) : 24,
+			baseUrl: baseUrl || "https://tweakcn.com",
+		};
+	} catch (error) {
+		console.error("Error loading user preferences:", error);
+		return {
+			autoSync: true,
+			syncInterval: 24,
+			baseUrl: "https://tweakcn.com",
+		};
+	}
+}
+
 export function useThemeSync({
-	syncOnMount = true,
-	updateInterval = 24,
-	baseUrl = "https://tweakcn.com",
+	syncOnMount: forceSyncOnMount,
+	updateInterval: forceUpdateInterval,
+	baseUrl: forceBaseUrl,
 }: UseThemeSyncOptions = {}): UseThemeSyncResult {
+	// Load user preferences
+	const userPrefs = loadUserPreferences();
+
+	// Use provided options or fallback to user preferences
+	const effectiveSyncOnMount =
+		forceSyncOnMount !== undefined ? forceSyncOnMount : userPrefs.autoSync;
+	const effectiveUpdateInterval = forceUpdateInterval || userPrefs.syncInterval;
+	const effectiveBaseUrl = forceBaseUrl || userPrefs.baseUrl;
+
 	// State to track all theme presets (local + remote)
 	const [allPresets, setAllPresets] =
 		useState<Record<string, ThemePreset>>(localPresets);
@@ -77,7 +120,7 @@ export function useThemeSync({
 		try {
 			// Fetch remote themes
 			const { presets: remotePresets, timestamp } =
-				await fetchTweakCNThemes(baseUrl);
+				await fetchTweakCNThemes(effectiveBaseUrl);
 
 			// Merge with local themes
 			const merged = mergeThemePresets(localPresets, remotePresets);
@@ -99,7 +142,7 @@ export function useThemeSync({
 		} finally {
 			setIsSyncing(false);
 		}
-	}, [baseUrl, isSyncing]);
+	}, [effectiveBaseUrl, isSyncing]);
 
 	// Load themes from local storage and check if update is needed
 	useEffect(() => {
@@ -111,11 +154,14 @@ export function useThemeSync({
 			setLastSyncTime(timestamp ? new Date(timestamp) : null);
 		}
 
-		// Check if we need to update
-		if (syncOnMount && shouldUpdateThemes(timestamp, updateInterval)) {
+		// Check if we need to update based on user preferences
+		if (
+			effectiveSyncOnMount &&
+			shouldUpdateThemes(timestamp, effectiveUpdateInterval)
+		) {
 			syncThemes();
 		}
-	}, [syncOnMount, updateInterval, syncThemes]);
+	}, [effectiveSyncOnMount, effectiveUpdateInterval, syncThemes]);
 
 	return {
 		presets: allPresets,

@@ -11,15 +11,26 @@ interface ThemeSyncStatusProps extends React.HTMLAttributes<HTMLDivElement> {
 	 * Whether to show a refresh button
 	 */
 	showRefresh?: boolean;
+
+	/**
+	 * Whether to show the sync settings status
+	 */
+	showSettings?: boolean;
 }
 
 export function ThemeSyncStatus({
 	className,
 	showRefresh = true,
+	showSettings = false,
 	...props
 }: ThemeSyncStatusProps) {
 	const { syncStatus, syncThemes, presets } = useThemeSwitch();
-	const { isSyncing, lastSyncTime } = syncStatus;
+	const {
+		isSyncing,
+		lastSyncTime,
+		syncEnabled = true,
+		syncInterval = 24,
+	} = syncStatus;
 
 	const formatTime = (date: Date | null) => {
 		if (!date) return "Never";
@@ -40,6 +51,16 @@ export function ThemeSyncStatus({
 		return date.toLocaleDateString();
 	};
 
+	// Format the interval for display
+	const formatInterval = (hours: number) => {
+		if (hours < 1) return "Less than hourly";
+		if (hours === 1) return "Every hour";
+		if (hours === 24) return "Daily";
+		if (hours === 168) return "Weekly";
+		if (hours >= 720) return "Monthly";
+		return `Every ${hours} hours`;
+	};
+
 	return (
 		<div
 			className={cn(
@@ -51,6 +72,14 @@ export function ThemeSyncStatus({
 			<div className="flex-1">
 				<span className="mr-1">{presets.length} themes</span>
 				{lastSyncTime && <span>• Last sync: {formatTime(lastSyncTime)}</span>}
+				{showSettings && (
+					<>
+						<span>• {syncEnabled ? "Auto sync " : "Manual sync only"}</span>
+						{syncEnabled && syncInterval && (
+							<span>• {formatInterval(syncInterval)}</span>
+						)}
+					</>
+				)}
 			</div>
 
 			{showRefresh && (

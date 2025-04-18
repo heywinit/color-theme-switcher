@@ -28,9 +28,6 @@ export default function Home() {
 					<Link href="/hook-example" className="text-primary hover:underline">
 						useThemeSwitch hook example →
 					</Link>
-					<Link href="/theme-sync" className="text-primary hover:underline">
-						Theme sync with tweakcn →
-					</Link>
 				</div>
 			</header>
 
