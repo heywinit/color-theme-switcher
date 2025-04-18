@@ -8,6 +8,8 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { DebugPanel } from "@/components/debug-panel";
+import Link from "next/link";
 
 // This page displays items from the custom registry.
 // You are free to implement this with your own design as needed.
@@ -22,6 +24,9 @@ export default function Home() {
 				<p className="text-muted-foreground">
 					A customizable theme switcher component for shadcn/ui
 				</p>
+				<Link href="/transitions" className="text-primary hover:underline mt-2">
+					View transition demos →
+				</Link>
 			</header>
 			<main className="flex flex-col flex-1 gap-8">
 				<Card className="flex flex-col gap-4 rounded-lg p-4 min-h-[450px] relative">
@@ -91,6 +96,9 @@ export default function Home() {
 					</CardFooter>
 				</Card>
 			</main>
+
+			{/* Debug Panel */}
+			<DebugPanel />
 		</div>
 	);
 }
