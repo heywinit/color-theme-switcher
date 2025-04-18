@@ -1,4 +1,4 @@
-import { ThemePreset, ThemeStyles } from "./types";
+import type { ThemePreset, ThemeStyles } from "./types";
 
 // Default theme state that will be used as a fallback
 export const defaultThemeState = {
@@ -95,14 +95,25 @@ export const defaultThemeState = {
 	},
 };
 
-// Function to get theme styles for a preset
-export function getPresetThemeStyles(name: string): ThemeStyles {
+/**
+ * Get the theme styles for a given preset
+ *
+ * @param name The name of the preset to get styles for
+ * @param customPresets Optional custom presets to use instead of the default ones
+ * @returns The theme styles for the preset
+ */
+export function getPresetThemeStyles(
+	name: string,
+	customPresets?: Record<string, ThemePreset>,
+): ThemeStyles {
+	const presetsToUse = customPresets || presets;
 	const defaultTheme = defaultThemeState.styles;
+
 	if (name === "default") {
 		return defaultTheme;
 	}
 
-	const preset = presets[name];
+	const preset = presetsToUse[name];
 	if (!preset) {
 		return defaultTheme;
 	}

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ColorThemeSwitcher } from "@/components/ui/color-theme-switcher";
+import { ThemeSwitcher } from "@/components/ui/theme-switcher";
 import {
 	Card,
 	CardContent,
@@ -18,16 +18,23 @@ export default function Home() {
 	return (
 		<div className="max-w-3xl mx-auto flex flex-col min-h-svh px-4 py-8 gap-8">
 			<header className="flex flex-col gap-1">
-				<h1 className="text-3xl font-bold tracking-tight">
-					Color Theme Switcher
-				</h1>
+				<h1 className="text-3xl font-bold tracking-tight">Theme Switcher</h1>
 				<p className="text-muted-foreground">
 					A customizable theme switcher component for shadcn/ui
 				</p>
-				<Link href="/transitions" className="text-primary hover:underline mt-2">
-					View transition demos →
-				</Link>
+				<div className="flex gap-4 mt-2">
+					<Link href="/transitions" className="text-primary hover:underline">
+						View transition demos →
+					</Link>
+					<Link href="/hook-example" className="text-primary hover:underline">
+						useThemeSwitch hook example →
+					</Link>
+					<Link href="/theme-sync" className="text-primary hover:underline">
+						Theme sync with tweakcn →
+					</Link>
+				</div>
 			</header>
+
 			<main className="flex flex-col flex-1 gap-8">
 				<Card className="flex flex-col gap-4 rounded-lg p-4 min-h-[450px] relative">
 					<CardHeader>
@@ -39,7 +46,7 @@ export default function Home() {
 					</CardHeader>
 					<CardContent className="flex flex-col gap-6">
 						<div className="flex items-center justify-center bg-card rounded-md p-6 shadow-sm border">
-							<ColorThemeSwitcher />
+							<ThemeSwitcher showSyncStatus={true} />
 						</div>
 
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -92,7 +99,7 @@ export default function Home() {
 						<p className="text-sm text-muted-foreground">
 							Try selecting different themes to see how the colors change.
 						</p>
-						<ColorThemeSwitcher align="end" />
+						<ThemeSwitcher align="end" />
 					</CardFooter>
 				</Card>
 			</main>
