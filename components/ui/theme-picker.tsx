@@ -15,7 +15,7 @@ import {
 import { useTheme } from "@/lib/theme-provider";
 import { presets } from "@/lib/theme-presets";
 import { cn } from "@/lib/utils";
-import { ThemeStyleProps } from "@/lib/types";
+import type { ThemeStyleProps } from "@/lib/types";
 import { colorFormatter } from "@/lib/color-converter";
 
 // Format color for CSS var (space-separated HSL format)

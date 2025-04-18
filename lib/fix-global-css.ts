@@ -1,7 +1,7 @@
 "use client";
 
 import { colorFormatter } from "./color-converter";
-import { ThemeState, ThemeTransitionOptions } from "./types";
+import type { ThemeState, ThemeTransitionOptions } from "./types";
 import {
 	applyThemeTransition,
 	DEFAULT_TRANSITION,
@@ -104,13 +104,13 @@ export function createThemeStylesheet(
 		}
 	}
 
-	cssText += `}\n`;
+	cssText += "}\n";
 
 	// Add dark mode specific overrides
 	if (currentMode === "dark") {
-		cssText += `.dark {\n  color-scheme: dark;\n}\n`;
+		cssText += ".dark {\n  color-scheme: dark;\n}\n";
 	} else {
-		cssText += `:root {\n  color-scheme: light;\n}\n`;
+		cssText += ":root {\n  color-scheme: light;\n}\n";
 	}
 
 	styleEl.textContent = cssText;
@@ -149,7 +149,14 @@ export function quickApplyTheme(
 
 // Add a global utility for debugging
 if (typeof window !== "undefined") {
-	(window as any).__fixTheme = (
+	(
+		window as unknown as {
+			__fixTheme: (
+				themeState: ThemeState,
+				transitionOptions?: ThemeTransitionOptions,
+			) => void;
+		}
+	).__fixTheme = (
 		themeState: ThemeState,
 		transitionOptions?: ThemeTransitionOptions,
 	) => {

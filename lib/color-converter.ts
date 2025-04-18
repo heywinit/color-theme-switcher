@@ -1,23 +1,26 @@
-import { ColorFormat } from "./types";
+import type { ColorFormat } from "./types";
 
 // Helper function to convert hex to RGB
 function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
 	const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-	hex = hex.replace(shorthandRegex, (_, r, g, b) => r + r + g + g + b + b);
+	const expandedHex = hex.replace(
+		shorthandRegex,
+		(_, r, g, b) => r + r + g + g + b + b,
+	);
 
-	const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+	const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(expandedHex);
 	return result
 		? {
-				r: parseInt(result[1], 16),
-				g: parseInt(result[2], 16),
-				b: parseInt(result[3], 16),
+				r: Number.parseInt(result[1], 16),
+				g: Number.parseInt(result[2], 16),
+				b: Number.parseInt(result[3], 16),
 			}
 		: null;
 }
 
 // Helper function to convert RGB to hex
 function rgbToHex(r: number, g: number, b: number): string {
-	return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+	return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
 }
 
 // Helper function to convert RGB to HSL
@@ -26,12 +29,12 @@ function rgbToHsl(
 	g: number,
 	b: number,
 ): { h: number; s: number; l: number } {
-	r /= 255;
-	g /= 255;
-	b /= 255;
+	const rNorm = r / 255;
+	const gNorm = g / 255;
+	const bNorm = b / 255;
 
-	const max = Math.max(r, g, b);
-	const min = Math.min(r, g, b);
+	const max = Math.max(rNorm, gNorm, bNorm);
+	const min = Math.min(rNorm, gNorm, bNorm);
 	let h = 0;
 	let s = 0;
 	const l = (max + min) / 2;
@@ -41,14 +44,14 @@ function rgbToHsl(
 		s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
 
 		switch (max) {
-			case r:
-				h = (g - b) / d + (g < b ? 6 : 0);
+			case rNorm:
+				h = (gNorm - bNorm) / d + (gNorm < bNorm ? 6 : 0);
 				break;
-			case g:
-				h = (b - r) / d + 2;
+			case gNorm:
+				h = (bNorm - rNorm) / d + 2;
 				break;
-			case b:
-				h = (r - g) / d + 4;
+			case bNorm:
+				h = (rNorm - gNorm) / d + 4;
 				break;
 		}
 
@@ -63,24 +66,24 @@ function parseHsl(hslStr: string): { h: number; s: number; l: number } | null {
 	const hslRegex = /hsl\(\s*(\d+)\s*,\s*(\d+)%\s*,\s*(\d+)%\s*\)/i;
 	const hslRegexWithSpaces = /hsl\(\s*(\d+)\s+(\d+)%\s+(\d+)%\s*\)/i;
 
-	let match = hslRegex.exec(hslStr) || hslRegexWithSpaces.exec(hslStr);
+	const match = hslRegex.exec(hslStr) || hslRegexWithSpaces.exec(hslStr);
 
 	if (!match) {
 		const rawValues = hslStr.split(" ");
 		if (rawValues.length === 3) {
 			return {
-				h: parseFloat(rawValues[0]),
-				s: parseFloat(rawValues[1].replace("%", "")),
-				l: parseFloat(rawValues[2].replace("%", "")),
+				h: Number.parseFloat(rawValues[0]),
+				s: Number.parseFloat(rawValues[1].replace("%", "")),
+				l: Number.parseFloat(rawValues[2].replace("%", "")),
 			};
 		}
 		return null;
 	}
 
 	return {
-		h: parseInt(match[1]),
-		s: parseInt(match[2]),
-		l: parseInt(match[3]),
+		h: Number.parseInt(match[1], 10),
+		s: Number.parseInt(match[2], 10),
+		l: Number.parseInt(match[3], 10),
 	};
 }
 
@@ -88,7 +91,7 @@ function parseHsl(hslStr: string): { h: number; s: number; l: number } | null {
 export function colorFormatter(
 	color: string,
 	targetFormat: ColorFormat,
-	precision: string = "0",
+	precision = "0",
 ): string {
 	// Handle empty or invalid input
 	if (!color) return "";
@@ -104,7 +107,9 @@ export function colorFormatter(
 	}
 
 	// Extract RGB values from different formats
-	let r, g, b;
+	let r: number;
+	let g: number;
+	let b: number;
 
 	if (color.startsWith("#")) {
 		// Convert from hex
@@ -117,9 +122,9 @@ export function colorFormatter(
 		// Parse RGB format
 		const match = /rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/.exec(color);
 		if (!match) return color;
-		r = parseInt(match[1]);
-		g = parseInt(match[2]);
-		b = parseInt(match[3]);
+		r = Number.parseInt(match[1], 10);
+		g = Number.parseInt(match[2], 10);
+		b = Number.parseInt(match[3], 10);
 	} else if (color.startsWith("hsl") || color.includes(" ")) {
 		// Parse HSL format
 		const hsl = parseHsl(color);
@@ -131,7 +136,9 @@ export function colorFormatter(
 		const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
 		const m = l / 100 - c / 2;
 
-		let rp, gp, bp;
+		let rp: number;
+		let gp: number;
+		let bp: number;
 
 		if (h >= 0 && h < 60) {
 			[rp, gp, bp] = [c, x, 0];
@@ -168,9 +175,9 @@ export function colorFormatter(
 
 			if (precision === "0") {
 				return `${hRounded} ${sRounded}% ${lRounded}%`;
-			} else {
-				return `hsl(${hRounded}, ${sRounded}%, ${lRounded}%)`;
 			}
+
+			return `hsl(${hRounded}, ${sRounded}%, ${lRounded}%)`;
 		}
 		case "oklch":
 			// A simplified conversion to oklch format

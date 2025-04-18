@@ -25,7 +25,7 @@ export function DebugPanel() {
 		};
 
 		setCssVars(vars);
-	}, [themeState, isOpen]);
+	}, [isOpen]);
 
 	if (!isOpen) {
 		return (

@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
+import type React from "react";
 import { CustomThemeProvider } from "@/lib/theme-provider";
-import { ThemeTransitionOptions } from "@/lib/types";
+import type { ThemeTransitionOptions } from "@/lib/types";
 
 export interface ThemeProviderWrapperProps {
 	children: React.ReactNode;
