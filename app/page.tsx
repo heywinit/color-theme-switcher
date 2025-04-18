@@ -4,7 +4,6 @@ import {
 	Card,
 	CardContent,
 	CardDescription,
-	CardFooter,
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
@@ -46,7 +45,7 @@ export default function Home() {
 					</CardHeader>
 					<CardContent className="flex flex-col gap-6">
 						<div className="flex items-center justify-center bg-card rounded-md p-6 shadow-sm border">
-							<ThemeSwitcher showSyncStatus={true} />
+							<ThemeSwitcher />
 						</div>
 
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -95,12 +94,6 @@ export default function Home() {
 							</Card>
 						</div>
 					</CardContent>
-					<CardFooter className="flex justify-between">
-						<p className="text-sm text-muted-foreground">
-							Try selecting different themes to see how the colors change.
-						</p>
-						<ThemeSwitcher align="end" />
-					</CardFooter>
 				</Card>
 			</main>
 
