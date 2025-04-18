@@ -1,64 +1,109 @@
 {
-  "$schema": "https://ui.shadcn.com/schema/registry.json",
-  "name": "acme",
-  "homepage": "https://acme.com",
-  "items": [
-    {
-      "name": "hello-world",
-      "type": "registry:component",
-      "title": "Hello World",
-      "description": "A simple hello world component",
-      "registryDependencies": ["button"],
-      "files": [
-        {
-          "path": "registry/new-york/hello-world/hello-world.tsx",
-          "type": "registry:component"
-        }
-      ]
-    },
-    {
-      "name": "example-form",
-      "type": "registry:component",
-      "title": "Example Form",
-      "description": "A contact form with Zod validation.",
-      "dependencies": ["zod"],
-      "registryDependencies": ["button", "input", "label", "textarea", "card"],
-      "files": [
-        {
-          "path": "registry/new-york/example-form/example-form.tsx",
-          "type": "registry:component"
-        }
-      ]
-    },
-    {
-      "name": "complex-component",
-      "type": "registry:component",
-      "title": "Complex Component",
-      "description": "A complex component showing hooks, libs and components.",
-      "registryDependencies": ["card"],
-      "files": [
-        {
-          "path": "registry/new-york/complex-component/page.tsx",
-          "type": "registry:page",
-          "target": "app/pokemon/page.tsx"
-        },
-        {
-          "path": "registry/new-york/complex-component/components/pokemon-card.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "registry/new-york/complex-component/components/pokemon-image.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "registry/new-york/complex-component/lib/pokemon.ts",
-          "type": "registry:lib"
-        },
-        {
-          "path": "registry/new-york/complex-component/hooks/use-pokemon.ts",
-          "type": "registry:hook"
-        }
-      ]
-    }
-  ]
+	"$schema": "https://ui.shadcn.com/schema/registry.json",
+	"name": "acme",
+	"homepage": "https://acme.com",
+	"items": [
+		{
+			"name": "hello-world",
+			"type": "registry:component",
+			"title": "Hello World",
+			"description": "A simple hello world component",
+			"registryDependencies": ["button"],
+			"files": [
+				{
+					"path": "registry/new-york/hello-world/hello-world.tsx",
+					"type": "registry:component"
+				}
+			]
+		},
+		{
+			"name": "example-form",
+			"type": "registry:component",
+			"title": "Example Form",
+			"description": "A contact form with Zod validation.",
+			"dependencies": ["zod"],
+			"registryDependencies": ["button", "input", "label", "textarea", "card"],
+			"files": [
+				{
+					"path": "registry/new-york/example-form/example-form.tsx",
+					"type": "registry:component"
+				}
+			]
+		},
+		{
+			"name": "complex-component",
+			"type": "registry:component",
+			"title": "Complex Component",
+			"description": "A complex component showing hooks, libs and components.",
+			"registryDependencies": ["card"],
+			"files": [
+				{
+					"path": "registry/new-york/complex-component/page.tsx",
+					"type": "registry:page",
+					"target": "app/pokemon/page.tsx"
+				},
+				{
+					"path": "registry/new-york/complex-component/components/pokemon-card.tsx",
+					"type": "registry:component"
+				},
+				{
+					"path": "registry/new-york/complex-component/components/pokemon-image.tsx",
+					"type": "registry:component"
+				},
+				{
+					"path": "registry/new-york/complex-component/lib/pokemon.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "registry/new-york/complex-component/hooks/use-pokemon.ts",
+					"type": "registry:hook"
+				}
+			]
+		},
+		{
+			"name": "color-theme-switcher",
+			"type": "registry:component",
+			"title": "Color Theme Switcher",
+			"description": "A comprehensive theme switcher with light/dark mode and color scheme support",
+			"registryDependencies": ["button", "card"],
+			"files": [
+				{
+					"path": "components/ui/color-theme-switcher.tsx",
+					"type": "registry:component"
+				},
+				{
+					"path": "components/ui/theme-mode-toggle.tsx",
+					"type": "registry:component"
+				},
+				{
+					"path": "components/ui/theme-picker.tsx",
+					"type": "registry:component"
+				},
+				{
+					"path": "components/ui/color-swatch.tsx",
+					"type": "registry:component"
+				},
+				{
+					"path": "lib/theme-provider.tsx",
+					"type": "registry:lib"
+				},
+				{
+					"path": "lib/theme-presets.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "lib/color-converter.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "lib/apply-style-to-element.ts",
+					"type": "registry:lib"
+				},
+				{
+					"path": "lib/types.ts",
+					"type": "registry:lib"
+				}
+			]
+		}
+	]
 }
