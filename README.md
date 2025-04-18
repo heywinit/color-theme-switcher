@@ -2,6 +2,8 @@
 
 A comprehensive color theme switcher component for ShadCN UI. This component allows users to toggle between light and dark modes and select from a variety of predefined color schemes.
 
+This component is inspired by and compatible with [TweakCN](https://tweakcn.com), a powerful Visual Theme Editor for tailwind CSS & shadcn/ui components created by [Sahaj](https://github.com/jnsahaj).
+
 ## Features
 
 - Toggle between light and dark modes

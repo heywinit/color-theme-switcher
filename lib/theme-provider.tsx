@@ -1,3 +1,7 @@
+/**
+ * Theme provider for the Color Theme Switcher.
+ * Implementation inspired by and compatible with TweakCN (https://tweakcn.com) by Sahaj (https://github.com/jnsahaj).
+ */
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
