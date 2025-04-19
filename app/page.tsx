@@ -19,12 +19,15 @@ import {
 	Palette,
 	Paintbrush,
 	Sparkles,
+	Wand2,
 } from "lucide-react";
 import Link from "next/link";
 import { CodeBlock } from "@/components/ui/code-block";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { TransitionControls } from "@/components/ui/transition-controls";
+import type { ThemeTransitionType } from "@/lib/types";
 
 // This page displays items from the custom registry.
 // You are free to implement this with your own design as needed.
@@ -34,6 +37,12 @@ export default function Home() {
 		"pnpm" | "npm" | "yarn" | "bun"
 	>("npm");
 	const [registryCopied, setRegistryCopied] = React.useState(false);
+	const [customThemeSwitcherProps, setCustomThemeSwitcherProps] =
+		React.useState({
+			transitionType: "fade" as ThemeTransitionType,
+			transitionDuration: 300,
+			disableTransition: false,
+		});
 
 	const copyRegistryCommand = () => {
 		navigator.clipboard.writeText(getRegistryCommand());
@@ -55,6 +64,33 @@ export default function Home() {
 				return "npm install colorswitchcn";
 		}
 	};
+
+	const handleTransitionChange = React.useCallback(
+		(options: {
+			type: ThemeTransitionType;
+			duration: number;
+			disabled: boolean;
+		}) => {
+			// Only update state if values actually changed to prevent unnecessary re-renders
+			setCustomThemeSwitcherProps((prev) => {
+				if (
+					prev.transitionType === options.type &&
+					prev.transitionDuration === options.duration &&
+					prev.disableTransition === options.disabled
+				) {
+					return prev; // No change
+				}
+
+				// Return new state only if something changed
+				return {
+					transitionType: options.type,
+					transitionDuration: options.duration,
+					disableTransition: options.disabled,
+				};
+			});
+		},
+		[],
+	);
 
 	const features = [
 		{
@@ -153,7 +189,13 @@ export default function Home() {
 							</div>
 
 							<div className="flex flex-col items-center gap-6 w-full">
-								<ThemeSwitcher />
+								<ThemeSwitcher
+									transitionType={customThemeSwitcherProps.transitionType}
+									transitionDuration={
+										customThemeSwitcherProps.transitionDuration
+									}
+									disableTransition={customThemeSwitcherProps.disableTransition}
+								/>
 
 								<div className="text-sm text-center text-muted-foreground">
 									<p className="flex items-center justify-center gap-2">
@@ -326,7 +368,15 @@ export function Navbar() {
 							</CardHeader>
 							<CardContent className="space-y-8">
 								<div className="flex justify-center p-6 bg-card rounded-lg shadow-sm border">
-									<ThemeSwitcher />
+									<ThemeSwitcher
+										transitionType={customThemeSwitcherProps.transitionType}
+										transitionDuration={
+											customThemeSwitcherProps.transitionDuration
+										}
+										disableTransition={
+											customThemeSwitcherProps.disableTransition
+										}
+									/>
 								</div>
 
 								<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -376,6 +426,56 @@ export function Navbar() {
 										<div className="h-20 bg-muted rounded-md border flex items-center justify-center shadow-sm">
 											Muted Background
 										</div>
+									</div>
+								</div>
+							</CardContent>
+						</Card>
+
+						<Card className="border shadow-sm mt-8">
+							<CardHeader>
+								<CardTitle className="flex items-center gap-2">
+									<Wand2 className="h-5 w-5 text-primary" />
+									Customize Transitions
+								</CardTitle>
+								<CardDescription>
+									Experiment with different transition effects and settings
+								</CardDescription>
+							</CardHeader>
+							<CardContent>
+								<div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+									<div className="space-y-4">
+										<TransitionControls onChange={handleTransitionChange} />
+										<div className="rounded-md p-4 bg-muted/30 text-sm">
+											<p className="text-muted-foreground mb-2">
+												Current settings:
+											</p>
+											<code className="text-xs font-mono block whitespace-pre bg-muted/50 p-3 rounded-md overflow-x-auto">
+												{`<ThemeSwitcher
+  transitionType="${customThemeSwitcherProps.transitionType}"
+  transitionDuration={${customThemeSwitcherProps.transitionDuration}}
+  disableTransition={${customThemeSwitcherProps.disableTransition}}
+/>`}
+											</code>
+										</div>
+									</div>
+									<div className="flex flex-col items-center justify-center gap-6 bg-card rounded-lg p-6 border">
+										<h3 className="font-medium text-lg">Try It Out</h3>
+										<p className="text-muted-foreground text-sm text-center">
+											Switch themes using the controls below to see your custom
+											transition in action
+										</p>
+										<ThemeSwitcher
+											transitionType={customThemeSwitcherProps.transitionType}
+											transitionDuration={
+												customThemeSwitcherProps.transitionDuration
+											}
+											disableTransition={
+												customThemeSwitcherProps.disableTransition
+											}
+										/>
+										<p className="text-xs text-muted-foreground mt-4 text-center">
+											Changes apply to all ThemeSwitcher instances on this page
+										</p>
 									</div>
 								</div>
 							</CardContent>

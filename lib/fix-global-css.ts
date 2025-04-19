@@ -129,35 +129,41 @@ export function quickApplyTheme(
 	const scrollX = window.scrollX;
 	const scrollY = window.scrollY;
 
-	// Setup transition styles if needed
-	setupTransitionStyles(transitionOptions);
+	// Use requestAnimationFrame to batch operations and reduce layout thrashing
+	window.requestAnimationFrame(() => {
+		// Setup transition styles if needed - this needs to happen before other changes
+		setupTransitionStyles(transitionOptions);
 
-	const { currentMode } = themeState;
-	const root = document.documentElement;
+		const { currentMode } = themeState;
+		const root = document.documentElement;
 
-	// Apply light/dark mode class
-	if (currentMode === "light") {
-		root.classList.remove("dark");
-	} else {
-		root.classList.add("dark");
-	}
+		// Create stylesheet with variables first (before applying transitions)
+		// This ensures the CSS variables are ready when the transition starts
+		createThemeStylesheet(themeState, transitionOptions.targetSelector);
 
-	console.log("Applying theme with CSS variables stylesheet");
+		// Batch class changes in the next frame to avoid forcing layout
+		window.requestAnimationFrame(() => {
+			// Apply light/dark mode class
+			if (currentMode === "light") {
+				root.classList.remove("dark");
+			} else {
+				root.classList.add("dark");
+			}
 
-	// Apply transition effect
-	applyThemeTransition(transitionOptions, themeState, coords);
+			// Apply transition effect after theme is ready
+			applyThemeTransition(transitionOptions, themeState, coords);
 
-	// Create stylesheet with variables
-	createThemeStylesheet(themeState, transitionOptions.targetSelector);
-
-	// Ensure scrollbars remain visible
-	document.body.style.overflowY = "auto";
-	document.documentElement.style.overflowY = "auto";
-
-	// Restore scroll position after theme change
-	setTimeout(() => {
-		window.scrollTo(scrollX, scrollY);
-	}, 0);
+			// Restore scroll position after theme change
+			if (scrollX !== window.scrollX || scrollY !== window.scrollY) {
+				window.scrollTo({
+					left: scrollX,
+					top: scrollY,
+					// Disable smooth scrolling to prevent additional visual complexity
+					behavior: "auto",
+				});
+			}
+		});
+	});
 }
 
 // Add a global utility for debugging

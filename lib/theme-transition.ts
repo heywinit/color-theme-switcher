@@ -11,17 +11,23 @@ export const DEFAULT_TRANSITION: ThemeTransitionOptions = {
 	easing: "ease-in-out",
 };
 
-// CSS for transitions
+// Optimization: Use GPU-accelerated properties where possible
+// CSS for transitions - optimized for performance
 const TRANSITION_CSS: Record<
 	ThemeTransitionType,
 	(duration: number, easing: string) => string
 > = {
 	fade: (duration: number, easing: string) => `
     .theme-transition-fade {
-      transition: background-color ${duration}ms ${easing},
+      transition: opacity ${duration}ms ${easing},
+                 transform ${duration}ms ${easing},
+                 background-color ${duration}ms ${easing},
                  color ${duration}ms ${easing},
-                 border-color ${duration}ms ${easing},
-                 box-shadow ${duration}ms ${easing};
+                 border-color ${duration}ms ${easing};
+      will-change: opacity, background-color, color;
+    }
+    .theme-transition-fade.transitioning {
+      opacity: 0.98;
     }
   `,
 	slide: (duration: number, easing: string) => `
@@ -41,6 +47,8 @@ const TRANSITION_CSS: Record<
       transform: translate(-50%, -50%);
       transition: width ${duration}ms ${easing}, height ${duration}ms ${easing};
       z-index: -1;
+      will-change: width, height;
+      pointer-events: none;
     }
     .theme-transition-slide.transitioning::before {
       width: calc(100% * 2.5);
@@ -52,6 +60,7 @@ const TRANSITION_CSS: Record<
       transition: transform ${duration}ms ${easing},
                  background-color ${duration}ms ${easing},
                  color ${duration}ms ${easing};
+      will-change: transform;
     }
     .theme-transition-zoom.transitioning {
       transform: scale(1.01);
@@ -62,6 +71,8 @@ const TRANSITION_CSS: Record<
       transition: transform ${duration}ms ${easing},
                  background-color ${duration}ms ${easing},
                  color ${duration}ms ${easing};
+      will-change: transform;
+      backface-visibility: hidden;
     }
     .theme-transition-rotate.transitioning {
       transform: rotate(2deg);
@@ -74,6 +85,8 @@ const TRANSITION_CSS: Record<
                  color ${duration}ms ${easing};
       transform-style: preserve-3d;
       perspective: 1000px;
+      will-change: transform;
+      backface-visibility: hidden;
     }
     .theme-transition-flip.transitioning {
       transform: rotateY(5deg);
@@ -84,6 +97,7 @@ const TRANSITION_CSS: Record<
       transition: transform ${duration}ms ${easing},
                  background-color ${duration}ms ${easing},
                  color ${duration}ms ${easing};
+      will-change: transform;
     }
     .theme-transition-scale.transitioning {
       transform: scale(0.98);
@@ -95,12 +109,18 @@ const TRANSITION_CSS: Record<
       50% { transform: scale(1.01); }
       100% { transform: scale(1); }
     }
+    .theme-transition-pulse {
+      will-change: transform;
+    }
     .theme-transition-pulse.transitioning {
       animation: theme-pulse ${duration}ms ${easing};
     }
   `,
 	none: () => "",
 };
+
+// Optimize stylesheet creation to reduce layout thrashing
+let transitionStylesCreated = false;
 
 // Setup transition styles
 export function setupTransitionStyles(
@@ -114,24 +134,42 @@ export function setupTransitionStyles(
 		easing = DEFAULT_TRANSITION.easing,
 	} = options;
 
-	// Remove any existing transition styles
-	const existingStyle = document.getElementById("theme-transition-styles");
-	if (existingStyle) {
-		existingStyle.remove();
-	}
-
 	// Skip if transition is none
 	if (type === "none") return;
+
+	// Optimization: Only recreate stylesheet if it doesn't exist
+	const existingStyle = document.getElementById("theme-transition-styles");
+	if (existingStyle) {
+		// If we already have styles for this transition type, just return
+		if (existingStyle.dataset.transitionType === type) {
+			return;
+		}
+		existingStyle.remove();
+	}
 
 	// Create style element for transitions
 	const styleEl = document.createElement("style");
 	styleEl.id = "theme-transition-styles";
+	styleEl.dataset.transitionType = type;
 	styleEl.textContent = TRANSITION_CSS[type](
 		duration || 300,
 		easing || "ease-in-out",
 	);
-	document.head.appendChild(styleEl);
+
+	// Use requestAnimationFrame to batch changes and reduce layout thrashing
+	if (!transitionStylesCreated) {
+		window.requestAnimationFrame(() => {
+			document.head.appendChild(styleEl);
+			transitionStylesCreated = true;
+		});
+	} else {
+		document.head.appendChild(styleEl);
+	}
 }
+
+// Track ongoing transitions to avoid conflicts
+let transitionInProgress = false;
+let transitionTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
 // Apply transition
 export function applyThemeTransition(
@@ -152,26 +190,44 @@ export function applyThemeTransition(
 
 	if (!targetElement) return;
 
-	// Set coordinates for slide transition if provided
-	if (type === "slide" && coords) {
-		const htmlElement = targetElement as HTMLElement;
-		htmlElement.style.setProperty("--x", `${coords.x}px`);
-		htmlElement.style.setProperty("--y", `${coords.y}px`);
-		htmlElement.style.setProperty(
-			"--theme-transition-bg",
-			themeState.currentMode === "dark"
-				? "rgba(0, 0, 0, 0.8)"
-				: "rgba(255, 255, 255, 0.8)",
-		);
+	// Optimization: If a transition is already in progress, clear the timeout
+	// to avoid multiple transitions stacking
+	if (transitionInProgress && transitionTimeoutId) {
+		clearTimeout(transitionTimeoutId);
+		targetElement.classList.remove("transitioning");
 	}
 
-	// Apply transition class
-	targetElement.classList.add(`theme-transition-${type}`);
-	targetElement.classList.add("transitioning");
+	transitionInProgress = true;
 
-	// Remove classes after transition completes
-	setTimeout(() => {
-		targetElement.classList.remove("transitioning");
-		// Keep the base class for continuous properties like color transitions
-	}, duration);
+	// Use requestAnimationFrame to optimize performance
+	window.requestAnimationFrame(() => {
+		// Set coordinates for slide transition if provided
+		if (type === "slide" && coords) {
+			const htmlElement = targetElement as HTMLElement;
+			htmlElement.style.setProperty("--x", `${coords.x}px`);
+			htmlElement.style.setProperty("--y", `${coords.y}px`);
+			htmlElement.style.setProperty(
+				"--theme-transition-bg",
+				themeState.currentMode === "dark"
+					? "rgba(0, 0, 0, 0.8)"
+					: "rgba(255, 255, 255, 0.8)",
+			);
+		}
+
+		// Apply transition class
+		targetElement.classList.add(`theme-transition-${type}`);
+
+		// Use a second rAF to ensure the first changes have been applied
+		// This creates a smooth transition
+		window.requestAnimationFrame(() => {
+			targetElement.classList.add("transitioning");
+
+			// Clear transition classes after animation completes
+			transitionTimeoutId = setTimeout(() => {
+				targetElement.classList.remove("transitioning");
+				transitionInProgress = false;
+				transitionTimeoutId = null;
+			}, duration + 50); // Add 50ms buffer for safety
+		});
+	});
 }

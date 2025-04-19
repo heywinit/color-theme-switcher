@@ -13,7 +13,6 @@ import type { ThemeTransitionType } from "@/lib/types";
 interface ColorThemeSwitcherProps {
 	className?: string;
 	align?: "start" | "center" | "end";
-	// These props are kept for the API but not used directly in this component
 	transitionType?: ThemeTransitionType;
 	transitionDuration?: number;
 	disableTransition?: boolean;
@@ -22,11 +21,8 @@ interface ColorThemeSwitcherProps {
 export function ColorThemeSwitcher({
 	className,
 	align = "center",
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	transitionType = "fade",
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	transitionDuration = 300,
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	disableTransition = false,
 }: ColorThemeSwitcherProps) {
 	const alignClass = {
@@ -34,6 +30,28 @@ export function ColorThemeSwitcher({
 		center: "justify-center",
 		end: "justify-end",
 	};
+
+	// Apply custom transition options if provided
+	React.useEffect(() => {
+		if (typeof window === "undefined") return;
+
+		// Update transition options in localStorage for persistence
+		if (transitionType) {
+			localStorage.setItem("theme-transition-type", transitionType);
+		}
+		if (transitionDuration) {
+			localStorage.setItem(
+				"theme-transition-duration",
+				transitionDuration.toString(),
+			);
+		}
+		if (disableTransition !== undefined) {
+			localStorage.setItem(
+				"theme-transition-disabled",
+				disableTransition.toString(),
+			);
+		}
+	}, [transitionType, transitionDuration, disableTransition]);
 
 	// Pass down theme mode toggle props
 	const themeModeToggleProps = {
