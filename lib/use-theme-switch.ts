@@ -8,70 +8,23 @@ import {
 } from "./theme-presets";
 import { quickApplyTheme } from "./fix-global-css";
 import type { ThemeMode, ThemeState, ThemeTransitionOptions } from "./types";
-import { useThemeSync } from "./use-theme-sync";
 
 export interface UseThemeSwitchOptions {
 	defaultPreset?: string;
 	transitionOptions?: ThemeTransitionOptions;
 	disableTransition?: boolean;
-	syncThemes?: boolean; // Whether to sync themes with tweakcn
-	syncBaseUrl?: string; // Base URL for the tweakcn API
-	syncInterval?: number; // Interval in hours for theme sync
-}
-
-// Function to load user sync settings for convenience
-function loadUserSyncSettings() {
-	if (typeof window === "undefined") {
-		return {
-			syncEnabled: true,
-			syncInterval: 24,
-			syncBaseUrl: "https://tweakcn.com",
-		};
-	}
-
-	const autoSync = localStorage.getItem("theme-auto-sync");
-	const syncInterval = localStorage.getItem("theme-sync-interval");
-	const syncUrl = localStorage.getItem("theme-sync-url");
-
-	return {
-		syncEnabled: autoSync === null ? true : autoSync === "true",
-		syncInterval: syncInterval ? Number.parseInt(syncInterval, 10) : 24,
-		syncBaseUrl: syncUrl || "https://tweakcn.com",
-	};
 }
 
 export function useThemeSwitch({
 	defaultPreset = "default",
 	transitionOptions = { type: "fade", duration: 300, easing: "ease-in-out" },
 	disableTransition = false,
-	syncThemes, // Make this undefined by default to respect user setting
-	syncBaseUrl,
-	syncInterval,
 }: UseThemeSwitchOptions = {}) {
 	// Use next-themes for base theme functionality
 	const { theme, setTheme, resolvedTheme } = useTheme();
 
 	// Track if we've already initialized to prevent infinite updates
 	const hasInitialized = useRef(false);
-
-	// Get user sync settings
-	const userSyncSettings = useMemo(() => loadUserSyncSettings(), []);
-
-	// Determine if we should sync based on explicit prop or user preference
-	const shouldSync =
-		syncThemes !== undefined ? syncThemes : userSyncSettings.syncEnabled;
-
-	// Sync themes with tweakcn if enabled
-	const {
-		presets: syncedPresets,
-		isSyncing,
-		lastSyncTime,
-		syncThemes: triggerSync,
-	} = useThemeSync({
-		syncOnMount: shouldSync,
-		baseUrl: syncBaseUrl || userSyncSettings.syncBaseUrl,
-		updateInterval: syncInterval || userSyncSettings.syncInterval,
-	});
 
 	// Use a safe initial state for server rendering
 	const initialState: ThemeState = {
@@ -89,13 +42,10 @@ export function useThemeSwitch({
 			disableTransition ? { type: "none" } : transitionOptions,
 		);
 
-	// Combine default presets with synced presets
+	// Use local presets
 	const allPresets = useMemo(() => {
-		// During server rendering or before sync, use default presets
-		if (!isMounted) return defaultPresets;
-
-		return syncedPresets;
-	}, [syncedPresets, isMounted]);
+		return defaultPresets;
+	}, []);
 
 	// Handle component mount - only runs on client
 	useEffect(() => {
@@ -227,15 +177,5 @@ export function useThemeSwitch({
 		presets: getAllPresets(),
 		getPresetLabel,
 		isMounted,
-
-		// Theme sync related
-		syncStatus: {
-			isSyncing,
-			lastSyncTime,
-			syncEnabled: shouldSync,
-			syncInterval: syncInterval || userSyncSettings.syncInterval,
-			syncBaseUrl: syncBaseUrl || userSyncSettings.syncBaseUrl,
-		},
-		syncThemes: triggerSync,
 	};
 }

@@ -13,15 +13,7 @@ import { Code } from "@/components/ui/code";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function HookExamplePage() {
-	const {
-		theme,
-		setTheme,
-		preset,
-		setPreset,
-		presets,
-		syncStatus,
-		syncThemes,
-	} = useThemeSwitch();
+	const { theme, setTheme, preset, setPreset, presets } = useThemeSwitch();
 
 	return (
 		<div className="container py-10 space-y-8">
@@ -40,8 +32,7 @@ export default function HookExamplePage() {
 				<CardContent className="space-y-4">
 					<p>
 						This hook handles both light/dark mode toggling and custom color
-						presets. It also provides optional integration with tweakcn for
-						theme synchronization.
+						presets. It&apos;s inspired by the TweakCN theme system.
 					</p>
 
 					<h3 className="text-lg font-semibold">Installation</h3>
@@ -105,25 +96,6 @@ setPreset('blue');`}
 								))}
 							</div>
 						</div>
-
-						{syncStatus && (
-							<div>
-								<h3 className="text-sm font-medium mb-2">Theme Sync</h3>
-								<Button
-									onClick={() => syncThemes()}
-									variant="outline"
-									disabled={syncStatus.isSyncing}
-								>
-									{syncStatus.isSyncing ? "Syncing..." : "Sync Themes"}
-								</Button>
-								{syncStatus.lastSyncTime && (
-									<p className="text-xs text-muted-foreground mt-1">
-										Last synced:{" "}
-										{new Date(syncStatus.lastSyncTime).toLocaleTimeString()}
-									</p>
-								)}
-							</div>
-						)}
 					</div>
 				</CardContent>
 			</Card>
@@ -151,8 +123,6 @@ setPreset('blue');`}
     easing: "ease-in-out"             // CSS easing function
   },
   disableTransition: false,           // Whether to disable transitions
-  syncThemes: true,                   // Whether to sync with tweakcn
-  syncBaseUrl: "https://tweakcn.com"  // Base URL for tweakcn API
 });`}
 							</Code>
 
@@ -174,18 +144,6 @@ setPreset('blue');`}
 									<h3 className="text-sm font-semibold">disableTransition</h3>
 									<p className="text-sm text-muted-foreground">
 										Disable all transitions for immediate theme changes.
-									</p>
-								</div>
-								<div>
-									<h3 className="text-sm font-semibold">syncThemes</h3>
-									<p className="text-sm text-muted-foreground">
-										Whether to sync with tweakcn for remote theme management.
-									</p>
-								</div>
-								<div>
-									<h3 className="text-sm font-semibold">syncBaseUrl</h3>
-									<p className="text-sm text-muted-foreground">
-										Base URL for the tweakcn API when syncing is enabled.
 									</p>
 								</div>
 							</div>
@@ -249,31 +207,15 @@ setPreset('blue');`}
 										Function to get a human-readable label for a preset ID
 									</p>
 								</div>
-								<div>
-									<h3 className="text-sm font-semibold">syncStatus</h3>
-									<p className="text-sm text-muted-foreground">
-										Object containing isSyncing and lastSyncTime for theme sync
-										status
-									</p>
-								</div>
-								<div>
-									<h3 className="text-sm font-semibold">syncThemes()</h3>
-									<p className="text-sm text-muted-foreground">
-										Function to trigger manual theme synchronization
-									</p>
-								</div>
-								<div>
-									<h3 className="text-sm font-semibold">isMounted</h3>
-									<p className="text-sm text-muted-foreground">
-										Boolean indicating whether the component is mounted on the
-										client
-									</p>
-								</div>
 							</div>
 						</CardContent>
 					</Card>
 				</TabsContent>
 			</Tabs>
+
+			<p className="text-sm text-muted-foreground">
+				Theme system inspired by TweakCN (https://tweakcn.com)
+			</p>
 		</div>
 	);
 }
