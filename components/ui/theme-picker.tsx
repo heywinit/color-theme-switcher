@@ -3,7 +3,6 @@
 import * as React from "react";
 import { Check, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ColorSwatch } from "@/components/ui/color-swatch";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -16,6 +15,36 @@ import { useTheme } from "@/lib/theme-provider";
 import { presets } from "@/lib/theme-presets";
 import { cn } from "@/lib/utils";
 import type { ThemeStyleProps } from "@/lib/types";
+
+interface ColorSwatchProps extends React.HTMLAttributes<HTMLDivElement> {
+	color: string;
+	size?: "sm" | "md" | "lg";
+}
+
+function ColorSwatch({
+	color,
+	size = "md",
+	className,
+	...props
+}: ColorSwatchProps) {
+	const sizeClasses = {
+		sm: "h-4 w-4",
+		md: "h-6 w-6",
+		lg: "h-8 w-8",
+	};
+
+	return (
+		<div
+			className={cn(
+				"rounded-md flex-shrink-0 border border-border/30",
+				sizeClasses[size],
+				className,
+			)}
+			style={{ backgroundColor: color }}
+			{...props}
+		/>
+	);
+}
 
 export function ThemePicker() {
 	const { themeState, applyThemePreset } = useTheme();

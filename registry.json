@@ -23,10 +23,6 @@
 					"type": "registry:component"
 				},
 				{
-					"path": "./components/ui/color-swatch.tsx",
-					"type": "registry:component"
-				},
-				{
 					"path": "./lib/theme-provider.tsx",
 					"type": "registry:lib"
 				},
@@ -36,10 +32,6 @@
 				},
 				{
 					"path": "./lib/color-converter.ts",
-					"type": "registry:lib"
-				},
-				{
-					"path": "./lib/apply-style-to-element.ts",
 					"type": "registry:lib"
 				},
 				{
