@@ -9,9 +9,9 @@ import {
 	CardFooter,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Github } from "lucide-react";
 import Link from "next/link";
+import { CodeBlock } from "@/components/ui/code-block";
 
 // This page displays items from the custom registry.
 // You are free to implement this with your own design as needed.
@@ -56,9 +56,7 @@ export default function Home() {
 								<ThemeSwitcher />
 							</CardContent>
 							<CardFooter className="bg-muted/10 p-4 rounded-b-lg">
-								<pre className="text-sm w-full overflow-x-auto p-2">
-									<code>{"<ThemeSwitcher />"}</code>
-								</pre>
+								<CodeBlock code="<ThemeSwitcher />" language="tsx" />
 							</CardFooter>
 						</Card>
 					</section>
@@ -80,16 +78,17 @@ export default function Home() {
 										<h3 className="text-lg font-medium mb-2">
 											1. Install the package
 										</h3>
-										<pre className="bg-muted/20 p-3 rounded-md text-sm overflow-x-auto">
-											<code>npm install colorswitchcn</code>
-										</pre>
+										<CodeBlock
+											code="npm install colorswitchcn"
+											language="bash"
+										/>
 									</div>
 									<div>
 										<h3 className="text-lg font-medium mb-2">
 											2. Import and use
 										</h3>
-										<pre className="bg-muted/20 p-3 rounded-md text-sm overflow-x-auto">
-											<code>{`import { ThemeSwitcher } from "colorswitchcn"
+										<CodeBlock
+											code={`import { ThemeSwitcher } from "colorswitchcn"
 
 export function Navbar() {
   return (
@@ -98,8 +97,9 @@ export function Navbar() {
       <ThemeSwitcher />
     </div>
   )
-}`}</code>
-										</pre>
+}`}
+											language="tsx"
+										/>
 									</div>
 								</div>
 							</CardContent>

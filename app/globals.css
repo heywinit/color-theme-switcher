@@ -158,8 +158,9 @@ body {
 	}
 }
 
+/* Code syntax highlighting - rehype-pretty-code */
 [data-rehype-pretty-code-fragment] {
-	@apply relative text-white;
+	@apply relative text-foreground;
 }
 
 [data-rehype-pretty-code-fragment] code {
@@ -177,7 +178,7 @@ body {
 }
 
 [data-rehype-pretty-code-fragment] [data-line-numbers] > .line::before {
-	@apply text-zinc-50/40 text-xs;
+	@apply text-muted-foreground text-xs;
 	counter-increment: line;
 	content: counter(line);
 	display: inline-block;
@@ -187,7 +188,7 @@ body {
 }
 
 [data-rehype-pretty-code-fragment] .line--highlighted {
-	@apply bg-zinc-700/50;
+	@apply bg-muted/50;
 }
 
 [data-rehype-pretty-code-fragment] .line-highlighted span {
@@ -195,11 +196,7 @@ body {
 }
 
 [data-rehype-pretty-code-fragment] .word--highlighted {
-	@apply rounded-md bg-zinc-700/50 border-zinc-700/70 p-1;
-}
-
-.dark [data-rehype-pretty-code-fragment] .word--highlighted {
-	@apply bg-zinc-900;
+	@apply rounded-md bg-muted/70 border-muted/80 p-1;
 }
 
 [data-rehype-pretty-code-title] {
@@ -208,4 +205,36 @@ body {
 
 [data-rehype-pretty-code-title] + pre {
 	@apply mt-2;
+}
+
+/* Shiki code block styles */
+.shiki {
+	@apply rounded-md bg-muted/30 p-4 text-sm overflow-x-auto my-0 !important;
+}
+
+.shiki code {
+	@apply text-sm font-mono !important;
+}
+
+.shiki .line {
+	@apply min-h-[1.5rem] !important;
+}
+
+.shiki .line.line-number {
+	@apply relative pl-7 !important;
+}
+
+.shiki .line.line-number::before {
+	@apply absolute left-0 w-5 text-right pr-2 text-xs text-muted-foreground !important;
+	content: attr(data-line);
+}
+
+/* Add an indicator for code language */
+.code-block-wrapper {
+	@apply relative;
+}
+
+.code-block-wrapper::before {
+	@apply absolute right-4 top-2 text-xs text-muted-foreground font-mono py-1 px-2 rounded-md bg-muted/50 opacity-70 z-10;
+	content: attr(data-language);
 }
