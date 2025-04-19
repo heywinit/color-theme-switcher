@@ -16,16 +16,16 @@ This component is inspired by and compatible with [TweakCN](https://tweakcn.com)
 
 ```bash
 # Using npm
-npx shadcn@latest add https://colorswitchcn.heywinit.me/registry/colorswitchcn
+npx shadcn@latest add https://colorswitchcn.heywinit.me/r/colorswitchcn.json
 
 # Using pnpm
-pnpm dlx shadcn@latest add https://colorswitchcn.heywinit.me/registry/colorswitchcn
+pnpm dlx shadcn@latest add https://colorswitchcn.heywinit.me/r/colorswitchcn.json
 
 # Using yarn
-yarn dlx shadcn@latest add https://colorswitchcn.heywinit.me/registry/colorswitchcn
+yarn dlx shadcn@latest add https://colorswitchcn.heywinit.me/r/colorswitchcn.json
 
 # Using bun
-bunx shadcn@latest add https://colorswitchcn.heywinit.me/registry/colorswitchcn
+bunx shadcn@latest add https://colorswitchcn.heywinit.me/r/colorswitchcn.json
 ```
 
 ## Usage

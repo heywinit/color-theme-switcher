@@ -1,4 +1,4 @@
-import * as React from "react";
+import type * as React from "react";
 // Copy your actual component code here
 
 // Example placeholder
