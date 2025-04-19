@@ -68,26 +68,7 @@ export interface ThemeState {
 
 export type ColorFormat = "hsl" | "hex" | "rgb" | "oklch";
 
-export type ThemeTransitionType =
-	| "none"
-	| "fade"
-	| "slide"
-	| "zoom"
-	| "rotate"
-	| "flip"
-	| "scale"
-	| "pulse";
-
-export interface ThemeTransitionOptions {
-	type: ThemeTransitionType;
-	duration?: number; // in ms
-	easing?: string;
-	targetSelector?: string; // CSS selector for target element (defaults to :root)
-}
-
 export interface ThemeProviderProps {
 	children: React.ReactNode;
 	defaultPreset?: string;
-	transitionOptions?: ThemeTransitionOptions;
-	disableTransition?: boolean;
 }

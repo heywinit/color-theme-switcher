@@ -1,12 +1,7 @@
 "use client";
 
 import { colorFormatter } from "./color-converter";
-import type { ThemeState, ThemeTransitionOptions } from "./types";
-import {
-	applyThemeTransition,
-	DEFAULT_TRANSITION,
-	setupTransitionStyles,
-} from "./theme-transition";
+import type { ThemeState } from "./types";
 
 // Convert any color to Tailwind-compatible HSL format
 // Tailwind expects "h s% l%" format without the hsl() wrapper
@@ -34,23 +29,17 @@ export function formatHslForCssVar(color: string): string {
 }
 
 // Get the target element for applying styles
-export function getStyleTarget(targetSelector?: string): HTMLElement {
+export function getStyleTarget(): HTMLElement {
 	if (typeof document === "undefined") {
 		throw new Error("getStyleTarget can only be called in browser environment");
 	}
 
-	// Default to root if no selector or selector not found
-	if (!targetSelector) return document.documentElement;
-
-	const target = document.querySelector(targetSelector);
-	return (target as HTMLElement) || document.documentElement;
+	// Always target root
+	return document.documentElement;
 }
 
 // Create a stylesheet with CSS variables instead of inline styles
-export function createThemeStylesheet(
-	themeState: ThemeState,
-	targetSelector?: string,
-): void {
+export function createThemeStylesheet(themeState: ThemeState): void {
 	if (typeof document === "undefined") return;
 
 	// Remove existing theme stylesheet if present
@@ -68,8 +57,8 @@ export function createThemeStylesheet(
 	const styleEl = document.createElement("style");
 	styleEl.id = "theme-variables-stylesheet";
 
-	// Create CSS selecting the target (default :root)
-	const targetRule = targetSelector || ":root";
+	// Create CSS selecting the root
+	const targetRule = ":root";
 
 	// Build CSS variable definitions
 	let cssText = `${targetRule} {\n`;
@@ -117,68 +106,36 @@ export function createThemeStylesheet(
 	document.head.appendChild(styleEl);
 }
 
-// Emergency fix for directly applying theme styles to document
-export function quickApplyTheme(
-	themeState: ThemeState,
-	transitionOptions: ThemeTransitionOptions = DEFAULT_TRANSITION,
-	coords?: { x: number; y: number },
-): void {
+// Apply theme directly
+export function applyTheme(themeState: ThemeState): void {
 	if (typeof window === "undefined") return;
 
 	// Save scroll position before theme change
 	const scrollX = window.scrollX;
 	const scrollY = window.scrollY;
 
-	// Use requestAnimationFrame to batch operations and reduce layout thrashing
+	// Batch operations to reduce layout thrashing
 	window.requestAnimationFrame(() => {
-		// Setup transition styles if needed - this needs to happen before other changes
-		setupTransitionStyles(transitionOptions);
-
 		const { currentMode } = themeState;
 		const root = document.documentElement;
 
-		// Create stylesheet with variables first (before applying transitions)
-		// This ensures the CSS variables are ready when the transition starts
-		createThemeStylesheet(themeState, transitionOptions.targetSelector);
+		// Create stylesheet with variables first
+		createThemeStylesheet(themeState);
 
-		// Batch class changes in the next frame to avoid forcing layout
-		window.requestAnimationFrame(() => {
-			// Apply light/dark mode class
-			if (currentMode === "light") {
-				root.classList.remove("dark");
-			} else {
-				root.classList.add("dark");
-			}
-
-			// Apply transition effect after theme is ready
-			applyThemeTransition(transitionOptions, themeState, coords);
-
-			// Restore scroll position after theme change
-			if (scrollX !== window.scrollX || scrollY !== window.scrollY) {
-				window.scrollTo({
-					left: scrollX,
-					top: scrollY,
-					// Disable smooth scrolling to prevent additional visual complexity
-					behavior: "auto",
-				});
-			}
-		});
-	});
-}
-
-// Add a global utility for debugging
-if (typeof window !== "undefined") {
-	(
-		window as unknown as {
-			__fixTheme: (
-				themeState: ThemeState,
-				transitionOptions?: ThemeTransitionOptions,
-			) => void;
+		// Apply light/dark mode class
+		if (currentMode === "light") {
+			root.classList.remove("dark");
+		} else {
+			root.classList.add("dark");
 		}
-	).__fixTheme = (
-		themeState: ThemeState,
-		transitionOptions?: ThemeTransitionOptions,
-	) => {
-		quickApplyTheme(themeState, transitionOptions);
-	};
+
+		// Restore scroll position after theme change
+		if (scrollX !== window.scrollX || scrollY !== window.scrollY) {
+			window.scrollTo({
+				left: scrollX,
+				top: scrollY,
+				behavior: "auto",
+			});
+		}
+	});
 }

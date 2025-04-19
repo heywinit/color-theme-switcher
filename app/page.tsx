@@ -17,17 +17,13 @@ import {
 	ArrowRight,
 	Code,
 	Palette,
-	Paintbrush,
 	Sparkles,
-	Wand2,
 } from "lucide-react";
 import Link from "next/link";
 import { CodeBlock } from "@/components/ui/code-block";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { TransitionControls } from "@/components/ui/transition-controls";
-import type { ThemeTransitionType } from "@/lib/types";
 
 // This page displays items from the custom registry.
 // You are free to implement this with your own design as needed.
@@ -37,12 +33,6 @@ export default function Home() {
 		"pnpm" | "npm" | "yarn" | "bun"
 	>("npm");
 	const [registryCopied, setRegistryCopied] = React.useState(false);
-	const [customThemeSwitcherProps, setCustomThemeSwitcherProps] =
-		React.useState({
-			transitionType: "fade" as ThemeTransitionType,
-			transitionDuration: 300,
-			disableTransition: false,
-		});
 
 	const copyRegistryCommand = () => {
 		navigator.clipboard.writeText(getRegistryCommand());
@@ -65,33 +55,6 @@ export default function Home() {
 		}
 	};
 
-	const handleTransitionChange = React.useCallback(
-		(options: {
-			type: ThemeTransitionType;
-			duration: number;
-			disabled: boolean;
-		}) => {
-			// Only update state if values actually changed to prevent unnecessary re-renders
-			setCustomThemeSwitcherProps((prev) => {
-				if (
-					prev.transitionType === options.type &&
-					prev.transitionDuration === options.duration &&
-					prev.disableTransition === options.disabled
-				) {
-					return prev; // No change
-				}
-
-				// Return new state only if something changed
-				return {
-					transitionType: options.type,
-					transitionDuration: options.duration,
-					disableTransition: options.disabled,
-				};
-			});
-		},
-		[],
-	);
-
 	const features = [
 		{
 			id: "easy-integration",
@@ -106,12 +69,6 @@ export default function Home() {
 			description:
 				"Beautiful pre-designed themes for both light and dark modes",
 			icon: <Palette className="h-5 w-5" />,
-		},
-		{
-			id: "smooth-transitions",
-			title: "Smooth Transitions",
-			description: "Elegant animations when switching between themes",
-			icon: <Paintbrush className="h-5 w-5" />,
 		},
 		{
 			id: "customizable",
@@ -139,7 +96,7 @@ export default function Home() {
 						</h1>
 						<p className="text-lg md:text-xl text-muted-foreground max-w-[42rem] mx-auto">
 							A beautiful, accessible theme switcher component for your
-							shadcn/ui projects with smooth transitions and multiple theme
+							shadcn/ui projects with instant theme changes and multiple theme
 							presets.
 						</p>
 						<div className="flex items-center justify-center mt-2">
@@ -189,19 +146,12 @@ export default function Home() {
 							</div>
 
 							<div className="flex flex-col items-center gap-6 w-full">
-								<ThemeSwitcher
-									transitionType={customThemeSwitcherProps.transitionType}
-									transitionDuration={
-										customThemeSwitcherProps.transitionDuration
-									}
-									disableTransition={customThemeSwitcherProps.disableTransition}
-								/>
+								<ThemeSwitcher />
 
 								<div className="text-sm text-center text-muted-foreground">
 									<p className="flex items-center justify-center gap-2">
 										<span className="inline-block size-2 rounded-full bg-primary" />
-										See real-time theme changes as you interact with the
-										component
+										See instant theme changes as you interact with the component
 									</p>
 								</div>
 							</div>
@@ -232,7 +182,7 @@ export default function Home() {
 						</p>
 					</div>
 
-					<div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+					<div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
 						{features.map((feature) => (
 							<Card
 								key={feature.id}
@@ -363,20 +313,12 @@ export function Navbar() {
 							<CardHeader>
 								<CardTitle className="text-2xl">Interactive Demo</CardTitle>
 								<CardDescription>
-									See how colors change in real-time across UI elements
+									See how colors change instantly across UI elements
 								</CardDescription>
 							</CardHeader>
 							<CardContent className="space-y-8">
 								<div className="flex justify-center p-6 bg-card rounded-lg shadow-sm border">
-									<ThemeSwitcher
-										transitionType={customThemeSwitcherProps.transitionType}
-										transitionDuration={
-											customThemeSwitcherProps.transitionDuration
-										}
-										disableTransition={
-											customThemeSwitcherProps.disableTransition
-										}
-									/>
+									<ThemeSwitcher />
 								</div>
 
 								<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -430,56 +372,6 @@ export function Navbar() {
 								</div>
 							</CardContent>
 						</Card>
-
-						<Card className="border shadow-sm mt-8">
-							<CardHeader>
-								<CardTitle className="flex items-center gap-2">
-									<Wand2 className="h-5 w-5 text-primary" />
-									Customize Transitions
-								</CardTitle>
-								<CardDescription>
-									Experiment with different transition effects and settings
-								</CardDescription>
-							</CardHeader>
-							<CardContent>
-								<div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-									<div className="space-y-4">
-										<TransitionControls onChange={handleTransitionChange} />
-										<div className="rounded-md p-4 bg-muted/30 text-sm">
-											<p className="text-muted-foreground mb-2">
-												Current settings:
-											</p>
-											<code className="text-xs font-mono block whitespace-pre bg-muted/50 p-3 rounded-md overflow-x-auto">
-												{`<ThemeSwitcher
-  transitionType="${customThemeSwitcherProps.transitionType}"
-  transitionDuration={${customThemeSwitcherProps.transitionDuration}}
-  disableTransition={${customThemeSwitcherProps.disableTransition}}
-/>`}
-											</code>
-										</div>
-									</div>
-									<div className="flex flex-col items-center justify-center gap-6 bg-card rounded-lg p-6 border">
-										<h3 className="font-medium text-lg">Try It Out</h3>
-										<p className="text-muted-foreground text-sm text-center">
-											Switch themes using the controls below to see your custom
-											transition in action
-										</p>
-										<ThemeSwitcher
-											transitionType={customThemeSwitcherProps.transitionType}
-											transitionDuration={
-												customThemeSwitcherProps.transitionDuration
-											}
-											disableTransition={
-												customThemeSwitcherProps.disableTransition
-											}
-										/>
-										<p className="text-xs text-muted-foreground mt-4 text-center">
-											Changes apply to all ThemeSwitcher instances on this page
-										</p>
-									</div>
-								</div>
-							</CardContent>
-						</Card>
 					</section>
 
 					<section id="api" className="scroll-mt-16">
@@ -520,27 +412,6 @@ export function Navbar() {
 													&quot;end&quot;
 												</div>
 											</div>
-											<div className="grid grid-cols-3 gap-4 font-mono text-sm">
-												<div className="font-medium">transitionType</div>
-												<div className="col-span-2 text-muted-foreground">
-													&quot;none&quot; | &quot;fade&quot; |
-													&quot;slide&quot; | &quot;zoom&quot; |
-													&quot;rotate&quot; | &quot;flip&quot; |
-													&quot;scale&quot; | &quot;pulse&quot;
-												</div>
-											</div>
-											<div className="grid grid-cols-3 gap-4 font-mono text-sm">
-												<div className="font-medium">transitionDuration</div>
-												<div className="col-span-2 text-muted-foreground">
-													number
-												</div>
-											</div>
-											<div className="grid grid-cols-3 gap-4 font-mono text-sm">
-												<div className="font-medium">disableTransition</div>
-												<div className="col-span-2 text-muted-foreground">
-													boolean
-												</div>
-											</div>
 										</div>
 									</div>
 								</div>
@@ -568,14 +439,6 @@ export function Navbar() {
 										className="text-sm text-muted-foreground hover:text-foreground"
 									>
 										Installation
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/transitions"
-										className="text-sm text-muted-foreground hover:text-foreground"
-									>
-										Transitions
 									</Link>
 								</li>
 								<li>

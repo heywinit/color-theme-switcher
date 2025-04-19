@@ -86,12 +86,10 @@
 	}
 }
 
-/* Custom CSS for theme transitions */
+/* Remove all transitions */
 * {
-	transition-property: color, background-color, border-color,
-		text-decoration-color, fill, stroke;
-	transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-	transition-duration: 150ms;
+	transition-property: none !important;
+	animation: none !important;
 }
 
 /* Fix for borders to use proper color */
@@ -133,29 +131,6 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
 	@apply bg-primary/30;
-}
-
-/* Theme transition effect */
-@keyframes theme-fade {
-	from {
-		opacity: 0;
-	}
-	to {
-		opacity: 1;
-	}
-}
-
-.theme-transition {
-	animation: theme-fade 0.5s ease;
-}
-
-@media (prefers-reduced-motion) {
-	* {
-		transition-duration: 0ms !important;
-	}
-	.theme-transition {
-		animation: none !important;
-	}
 }
 
 /* Code syntax highlighting - rehype-pretty-code */
