@@ -11,39 +11,39 @@
 			"registryDependencies": ["button", "card"],
 			"files": [
 				{
-					"path": "components/ui/color-theme-switcher.tsx",
+					"path": "./components/ui/color-theme-switcher.tsx",
 					"type": "registry:component"
 				},
 				{
-					"path": "components/ui/theme-mode-toggle.tsx",
+					"path": "./components/ui/theme-mode-toggle.tsx",
 					"type": "registry:component"
 				},
 				{
-					"path": "components/ui/theme-picker.tsx",
+					"path": "./components/ui/theme-picker.tsx",
 					"type": "registry:component"
 				},
 				{
-					"path": "components/ui/color-swatch.tsx",
+					"path": "./components/ui/color-swatch.tsx",
 					"type": "registry:component"
 				},
 				{
-					"path": "lib/theme-provider.tsx",
+					"path": "./lib/theme-provider.tsx",
 					"type": "registry:lib"
 				},
 				{
-					"path": "lib/theme-presets.ts",
+					"path": "./lib/theme-presets.ts",
 					"type": "registry:lib"
 				},
 				{
-					"path": "lib/color-converter.ts",
+					"path": "./lib/color-converter.ts",
 					"type": "registry:lib"
 				},
 				{
-					"path": "lib/apply-style-to-element.ts",
+					"path": "./lib/apply-style-to-element.ts",
 					"type": "registry:lib"
 				},
 				{
-					"path": "lib/types.ts",
+					"path": "./lib/types.ts",
 					"type": "registry:lib"
 				}
 			]

@@ -39,9 +39,19 @@ export async function GET(
 		// Read all files in parallel.
 		const filesWithContent = await Promise.all(
 			registryItem.files.map(async (file) => {
-				const filePath = path.join(process.cwd(), file.path);
-				const content = await fs.readFile(filePath, "utf8");
-				return { ...file, content };
+				// Remove leading './' if present to ensure consistent path resolution
+				const normalizedPath = file.path.startsWith("./")
+					? file.path.slice(2)
+					: file.path;
+				const filePath = path.join(process.cwd(), normalizedPath);
+
+				try {
+					const content = await fs.readFile(filePath, "utf8");
+					return { ...file, content };
+				} catch (error) {
+					console.error(`Error reading file ${filePath}:`, error);
+					throw error;
+				}
 			}),
 		);
 
