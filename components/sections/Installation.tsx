@@ -26,15 +26,15 @@ export function Installation() {
 	const getRegistryCommand = () => {
 		switch (packageManager) {
 			case "pnpm":
-				return "pnpm dlx shadcn@latest add https://cscn.heywinit.me/registry/colorswitchcn";
+				return "pnpm dlx shadcn@latest add https://colorswitchcn.heywinit.me/registry/colorswitchcn";
 			case "npm":
-				return "npx shadcn@latest add https://cscn.heywinit.me/registry/colorswitchcn";
+				return "npx shadcn@latest add https://colorswitchcn.heywinit.me/registry/colorswitchcn";
 			case "yarn":
-				return "yarn dlx shadcn@latest add https://cscn.heywinit.me/registry/colorswitchcn";
+				return "yarn dlx shadcn@latest add https://colorswitchcn.heywinit.me/registry/colorswitchcn";
 			case "bun":
-				return "bunx shadcn@latest add https://cscn.heywinit.me/registry/colorswitchcn";
+				return "bunx shadcn@latest add https://colorswitchcn.heywinit.me/registry/colorswitchcn";
 			default:
-				return "npx shadcn@latest add https://cscn.heywinit.me/registry/colorswitchcn";
+				return "npx shadcn@latest add https://colorswitchcn.heywinit.me/registry/colorswitchcn";
 		}
 	};
 
