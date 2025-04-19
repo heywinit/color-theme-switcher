@@ -19,15 +19,9 @@ export function ThemeModeToggle({
 	const { themeState, setThemeMode } = useTheme();
 	const isDarkMode = themeState.currentMode === "dark";
 
-	const toggleTheme = (e: React.MouseEvent) => {
-		// Get click coordinates for circular transition effect
-		const coords = {
-			x: e.clientX,
-			y: e.clientY,
-		};
-
+	const toggleTheme = () => {
 		const newMode = isDarkMode ? "light" : "dark";
-		setThemeMode(newMode, coords);
+		setThemeMode(newMode);
 	};
 
 	return (
