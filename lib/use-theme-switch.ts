@@ -7,6 +7,7 @@ import {
 	presets as defaultPresets,
 } from "./theme-presets";
 import type { ThemeState, ThemeMode } from "./types";
+import { applyTheme } from "./fix-global-css";
 
 export interface UseThemeSwitchOptions {
 	defaultPreset?: string;
@@ -65,18 +66,39 @@ export function useThemeSwitch({
 		}
 	}, [isMounted, resolvedTheme, defaultPreset]);
 
+	// Apply theme changes whenever state changes
+	useEffect(() => {
+		if (!isMounted) return;
+
+		try {
+			// Apply theme to document
+			applyTheme(themeState);
+
+			// Save to localStorage
+			localStorage.setItem("theme-preset", themeState.preset);
+			localStorage.setItem("theme-mode", themeState.currentMode);
+		} catch (error) {
+			console.error("Error applying theme changes:", error);
+		}
+	}, [themeState, isMounted]);
+
 	// Switch to another theme preset
 	const switchPreset = (presetName: string) => {
 		try {
+			let finalPresetName = presetName;
+			if (!allPresets[presetName]) {
+				console.warn(`Preset "${presetName}" not found, using default`);
+				finalPresetName = defaultPreset;
+			}
+
 			// Update theme state
 			setThemeState((prevState) => ({
 				...prevState,
-				preset: presetName,
-				styles: getPresetThemeStyles(presetName),
+				preset: finalPresetName,
+				styles: getPresetThemeStyles(finalPresetName),
 			}));
 
-			// Save to localStorage
-			localStorage.setItem("theme-preset", presetName);
+			console.log(`Switched to preset: ${finalPresetName}`);
 		} catch (error) {
 			console.error("Error switching theme preset:", error);
 		}
@@ -85,7 +107,15 @@ export function useThemeSwitch({
 	// Switch between light and dark mode
 	const toggleMode = () => {
 		const newMode = themeState.currentMode === "dark" ? "light" : "dark";
+
+		// Update both next-themes and our local state
 		setTheme(newMode);
+		setThemeState((prevState) => ({
+			...prevState,
+			currentMode: newMode,
+		}));
+
+		console.log(`Toggled theme mode to: ${newMode}`);
 	};
 
 	return {

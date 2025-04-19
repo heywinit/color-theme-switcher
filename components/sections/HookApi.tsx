@@ -9,9 +9,34 @@ import {
 import { CodeBlock } from "@/components/ui/code-block";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useThemeSwitch } from "@/lib/use-theme-switch";
+import { useEffect } from "react";
 
 export function HookApi() {
-	const { theme, switchPreset, toggleMode, allPresets } = useThemeSwitch();
+	const { theme, switchPreset, toggleMode, allPresets, isInitialized } =
+		useThemeSwitch();
+
+	// Debug current theme state
+	useEffect(() => {
+		if (isInitialized) {
+			console.log("Current theme state:", theme);
+		}
+	}, [theme, isInitialized]);
+
+	const handleModeToggle = (targetMode: "light" | "dark") => {
+		console.log(
+			`Toggling to ${targetMode} mode, current is ${theme.currentMode}`,
+		);
+		if (theme.currentMode !== targetMode) {
+			toggleMode();
+		}
+	};
+
+	const handlePresetChange = (presetId: string) => {
+		console.log(`Switching to preset ${presetId}, current is ${theme.preset}`);
+		if (theme.preset !== presetId) {
+			switchPreset(presetId);
+		}
+	};
 
 	return (
 		<section id="hook-api" className="scroll-mt-16">
@@ -63,13 +88,15 @@ switchPreset('blue');`}
 					<CardContent className="space-y-6">
 						<div className="flex flex-wrap gap-4">
 							<div>
-								<h3 className="text-sm font-medium mb-2">Theme Mode</h3>
+								<h3 className="text-sm font-medium mb-2">
+									Theme Mode: {theme.currentMode}
+								</h3>
 								<div className="flex gap-2">
 									<Button
 										variant={
 											theme.currentMode === "light" ? "default" : "outline"
 										}
-										onClick={() => toggleMode()}
+										onClick={() => handleModeToggle("light")}
 									>
 										Light
 									</Button>
@@ -77,7 +104,7 @@ switchPreset('blue');`}
 										variant={
 											theme.currentMode === "dark" ? "default" : "outline"
 										}
-										onClick={() => toggleMode()}
+										onClick={() => handleModeToggle("dark")}
 									>
 										Dark
 									</Button>
@@ -95,7 +122,7 @@ switchPreset('blue');`}
 											<Button
 												key={id}
 												variant={theme.preset === id ? "default" : "outline"}
-												onClick={() => switchPreset(id)}
+												onClick={() => handlePresetChange(id)}
 											>
 												{preset.label}
 											</Button>

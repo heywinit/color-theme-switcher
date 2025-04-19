@@ -7,7 +7,6 @@ import {
 	Installation,
 	ThemePreview,
 	HookApi,
-	ApiReference,
 	Footer,
 } from "@/components/sections";
 
@@ -22,7 +21,6 @@ export default function Home() {
 					<Installation />
 					<ThemePreview />
 					<HookApi />
-					<ApiReference />
 				</main>
 			</div>
 

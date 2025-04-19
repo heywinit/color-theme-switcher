@@ -31,48 +31,63 @@ export function CustomThemeProvider({
 	useEffect(() => {
 		if (typeof window === "undefined") return;
 
-		const savedTheme = localStorage.getItem("theme-mode") as ThemeMode | null;
-		const savedPreset =
-			localStorage.getItem("theme-preset") || defaultPreset || "default";
+		try {
+			const savedTheme = localStorage.getItem("theme-mode") as ThemeMode | null;
+			const savedPreset =
+				localStorage.getItem("theme-preset") || defaultPreset || "default";
 
-		// System preference for dark mode
-		const prefersDark = window.matchMedia(
-			"(prefers-color-scheme: dark)",
-		).matches;
-		const initialMode = savedTheme || (prefersDark ? "dark" : "light");
+			// System preference for dark mode
+			const prefersDark = window.matchMedia(
+				"(prefers-color-scheme: dark)",
+			).matches;
+			const initialMode = savedTheme || (prefersDark ? "dark" : "light");
 
-		// Set initial theme state
-		const initialState = {
-			currentMode: initialMode,
-			preset: savedPreset,
-			styles: getPresetThemeStyles(savedPreset),
-		};
+			// Set initial theme state
+			const initialState = {
+				currentMode: initialMode,
+				preset: savedPreset,
+				styles: getPresetThemeStyles(savedPreset),
+			};
 
-		setThemeState(initialState);
-		setIsInitialized(true);
+			console.log("Initializing theme:", initialState);
+			setThemeState(initialState);
+			setIsInitialized(true);
 
-		// Apply initial theme styles
-		applyTheme(initialState);
+			// Apply initial theme styles
+			applyTheme(initialState);
+		} catch (error) {
+			console.error("Error initializing theme:", error);
+			// Fallback to default theme
+			setThemeState(defaultThemeState);
+			setIsInitialized(true);
+			applyTheme(defaultThemeState);
+		}
 	}, [defaultPreset]);
 
 	// Apply theme whenever it changes
 	useEffect(() => {
 		if (typeof window === "undefined" || !isInitialized) return;
 
-		// Save preferences
-		localStorage.setItem("theme-mode", themeState.currentMode);
-		localStorage.setItem("theme-preset", themeState.preset);
+		try {
+			// Save preferences
+			localStorage.setItem("theme-mode", themeState.currentMode);
+			localStorage.setItem("theme-preset", themeState.preset);
 
-		// Apply the theme styles
-		applyTheme(themeState);
+			// Apply the theme styles
+			applyTheme(themeState);
 
-		console.log(
-			`Theme applied: ${themeState.preset}, mode: ${themeState.currentMode}`,
-		);
+			console.log(
+				`Theme applied: ${themeState.preset}, mode: ${themeState.currentMode}`,
+				themeState,
+			);
+		} catch (error) {
+			console.error("Error applying theme:", error);
+		}
 	}, [themeState, isInitialized]);
 
 	// Change theme mode (light/dark)
 	const setThemeMode = (mode: ThemeMode) => {
+		console.log(`Setting theme mode: ${mode}`);
 		setThemeState((prev) => ({
 			...prev,
 			currentMode: mode,
@@ -82,13 +97,17 @@ export function CustomThemeProvider({
 	// Apply a theme preset
 	const applyThemePreset = (preset: string) => {
 		console.log(`Applying preset: ${preset}`);
-		const newStyles = getPresetThemeStyles(preset);
+		try {
+			const newStyles = getPresetThemeStyles(preset);
 
-		setThemeState({
-			currentMode: themeState.currentMode,
-			preset,
-			styles: newStyles,
-		});
+			setThemeState((prev) => ({
+				...prev,
+				preset,
+				styles: newStyles,
+			}));
+		} catch (error) {
+			console.error(`Error applying preset ${preset}:`, error);
+		}
 	};
 
 	// Provider value
