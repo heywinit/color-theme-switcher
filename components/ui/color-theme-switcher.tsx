@@ -13,7 +13,6 @@ import type { ThemeTransitionType } from "@/lib/types";
 interface ColorThemeSwitcherProps {
 	className?: string;
 	align?: "start" | "center" | "end";
-	mode?: "horizontal" | "vertical";
 	// These props are kept for the API but not used directly in this component
 	transitionType?: ThemeTransitionType;
 	transitionDuration?: number;
@@ -23,7 +22,6 @@ interface ColorThemeSwitcherProps {
 export function ColorThemeSwitcher({
 	className,
 	align = "center",
-	mode = "horizontal",
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	transitionType = "fade",
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -37,11 +35,6 @@ export function ColorThemeSwitcher({
 		end: "justify-end",
 	};
 
-	const modeClass = {
-		horizontal: "flex-row gap-4",
-		vertical: "flex-col gap-2",
-	};
-
 	// Pass down theme mode toggle props
 	const themeModeToggleProps = {
 		variant: "outline" as const,
@@ -49,7 +42,7 @@ export function ColorThemeSwitcher({
 	};
 
 	return (
-		<div className={cn("flex", alignClass[align], modeClass[mode], className)}>
+		<div className={cn("flex flex-row gap-4", alignClass[align], className)}>
 			<ThemeModeToggle {...themeModeToggleProps} />
 			<ThemePicker />
 		</div>

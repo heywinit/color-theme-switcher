@@ -94,6 +94,27 @@
 	transition-duration: 150ms;
 }
 
+/* Fix for borders to use proper color */
+.border,
+[class*="border-"] {
+	border-color: hsl(var(--border));
+}
+
+.dark .border,
+.dark [class*="border-"] {
+	border-color: hsl(var(--border));
+}
+
+/* Fixed scrollbar styles that persist during theme changes */
+html {
+	overflow-y: auto !important;
+}
+
+body {
+	overflow-y: auto !important;
+	min-height: 100vh;
+}
+
 /* Customize scrollbars */
 ::-webkit-scrollbar {
 	width: 10px;

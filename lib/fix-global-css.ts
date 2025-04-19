@@ -125,6 +125,10 @@ export function quickApplyTheme(
 ): void {
 	if (typeof window === "undefined") return;
 
+	// Save scroll position before theme change
+	const scrollX = window.scrollX;
+	const scrollY = window.scrollY;
+
 	// Setup transition styles if needed
 	setupTransitionStyles(transitionOptions);
 
@@ -145,6 +149,15 @@ export function quickApplyTheme(
 
 	// Create stylesheet with variables
 	createThemeStylesheet(themeState, transitionOptions.targetSelector);
+
+	// Ensure scrollbars remain visible
+	document.body.style.overflowY = "auto";
+	document.documentElement.style.overflowY = "auto";
+
+	// Restore scroll position after theme change
+	setTimeout(() => {
+		window.scrollTo(scrollX, scrollY);
+	}, 0);
 }
 
 // Add a global utility for debugging
