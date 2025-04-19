@@ -39,7 +39,7 @@ export function Footer() {
 						<ul className="space-y-2">
 							<li>
 								<Link
-									href="https://github.com/jnsahaj/tweakcn"
+									href="https://github.com/heywinit/colorswitchcn"
 									target="_blank"
 									rel="noopener noreferrer"
 									className="text-sm text-muted-foreground hover:text-foreground"
@@ -87,7 +87,7 @@ export function Footer() {
 						<div className="mt-4">
 							<Button variant="outline" size="sm" asChild>
 								<Link
-									href="https://github.com/jnsahaj/tweakcn"
+									href="https://github.com/heywinit/colorswitchcn"
 									target="_blank"
 									rel="noopener noreferrer"
 									className="flex items-center gap-1.5"
