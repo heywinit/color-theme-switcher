@@ -43,13 +43,27 @@ export async function GET(
 
 		// If we're in Vercel environment, we need a different approach
 		if (isVercel) {
-			// In Vercel, we can't reliably access files, so return file paths only
-			// The client will need to fetch content another way
+			// Construct URLs to the public files instead of trying to read them
+			const getPublicUrl = (filePath: string) => {
+				// Remove leading ./ if present
+				const cleanPath = filePath.startsWith("./")
+					? filePath.slice(2)
+					: filePath;
+				// Get the base URL from the request
+				const host = request.headers.get("host") || "localhost";
+				const protocol = host.includes("localhost") ? "http" : "https";
+				const baseUrl = `${protocol}://${host}`;
+
+				// Construct the public URL
+				return `${baseUrl}/registry/${cleanPath}`;
+			};
+
 			return NextResponse.json({
 				...registryItem,
 				files: registryItem.files.map((file) => ({
 					...file,
-					content: `// This file (${file.path}) should be fetched directly via API.\n// Files cannot be read directly in the Vercel serverless environment.`,
+					content: `// This component is available at: ${getPublicUrl(file.path)}\n// Please access the code from that URL.`,
+					publicUrl: getPublicUrl(file.path),
 				})),
 				isVercelDeployment: true,
 			});
