@@ -15,35 +15,31 @@ This component is inspired by and compatible with [TweakCN](https://tweakcn.com)
 ## Installation
 
 ```bash
-# Using bun
-bun add @radix-ui/react-dropdown-menu @radix-ui/react-slot lucide-react
-
 # Using npm
-npm install @radix-ui/react-dropdown-menu @radix-ui/react-slot lucide-react
-
-# Using yarn
-yarn add @radix-ui/react-dropdown-menu @radix-ui/react-slot lucide-react
+npx shadcn@latest add https://colorswitchcn.heywinit.me/registry/colorswitchcn
 
 # Using pnpm
-pnpm add @radix-ui/react-dropdown-menu @radix-ui/react-slot lucide-react
+pnpm dlx shadcn@latest add https://colorswitchcn.heywinit.me/registry/colorswitchcn
+
+# Using yarn
+yarn dlx shadcn@latest add https://colorswitchcn.heywinit.me/registry/colorswitchcn
+
+# Using bun
+bunx shadcn@latest add https://colorswitchcn.heywinit.me/registry/colorswitchcn
 ```
 
 ## Usage
 
-1. Import the Color Theme Switcher component:
+After installing the components with shadcn, the files will be added to your project's components and lib directories. You can then import and use them:
 
 ```tsx
-import { ColorThemeSwitcher } from "colorswitchcn";
-```
+import { ThemeSwitcher } from "@/components/ui/theme-switcher";
 
-2. Use it in your application:
-
-```tsx
 export default function Header() {
   return (
     <header className="flex items-center justify-between p-4">
       <h1>My App</h1>
-      <ColorThemeSwitcher />
+      <ThemeSwitcher />
     </header>
   );
 }
@@ -51,17 +47,39 @@ export default function Header() {
 
 ## Component Props
 
-The `ColorThemeSwitcher` component accepts the following props:
+The `ThemeSwitcher` component accepts the following props:
 
 | Prop      | Type                    | Default       | Description                          |
 |-----------|-------------------------|---------------|--------------------------------------|
 | className | string                  | -             | Additional CSS classes               |
 | align     | "start"/"center"/"end"  | "center"      | Horizontal alignment of components   |
-| mode      | "horizontal"/"vertical" | "horizontal"  | Layout direction                     |
 
 ## Theme Management
 
-The theme state is managed through a dedicated context provider. You can access and modify the theme programmatically using the `useTheme` hook:
+The component includes a theme provider that needs to be wrapped around your application. Add the following to your root layout:
+
+```tsx
+// In your app layout
+import { ThemeProvider } from "next-themes";
+import { CustomThemeProvider } from "@/lib/theme-provider";
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <head />
+      <body>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <CustomThemeProvider defaultPreset="modern-minimal">
+            {children}
+          </CustomThemeProvider>
+        </ThemeProvider>
+      </body>
+    </html>
+  );
+}
+```
+
+You can access and modify the theme programmatically using the `useTheme` hook:
 
 ```tsx
 import { useTheme } from "@/lib/theme-provider";
