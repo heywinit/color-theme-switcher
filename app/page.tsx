@@ -7,7 +7,6 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { DebugPanel } from "@/components/debug-panel";
 import Link from "next/link";
 
 // This page displays items from the custom registry.
@@ -93,9 +92,6 @@ export default function Home() {
 					</CardContent>
 				</Card>
 			</main>
-
-			{/* Debug Panel */}
-			<DebugPanel />
 		</div>
 	);
 }
