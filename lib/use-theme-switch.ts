@@ -37,15 +37,17 @@ export function useThemeSwitch({
 	const [themeState, setThemeState] = useState<ThemeState>(initialState);
 	const [isInitialized, setIsInitialized] = useState(false);
 	const [isMounted, setIsMounted] = useState(false);
-	const [actualTransitionOptions, setActualTransitionOptions] =
-		useState<ThemeTransitionOptions>(
-			disableTransition ? { type: "none" } : transitionOptions,
-		);
 
 	// Use local presets
 	const allPresets = useMemo(() => {
 		return defaultPresets;
 	}, []);
+
+	// Memoize transition options to prevent re-renders
+	const memoizedTransitionOptions = useMemo(
+		() => (disableTransition ? { type: "none" as const } : transitionOptions),
+		[disableTransition, transitionOptions],
+	);
 
 	// Handle component mount - only runs on client
 	useEffect(() => {
@@ -93,13 +95,6 @@ export function useThemeSwitch({
 		}
 	}, [theme, resolvedTheme, isMounted, isInitialized, themeState.currentMode]);
 
-	// Update transition options if props change
-	useEffect(() => {
-		setActualTransitionOptions(
-			disableTransition ? { type: "none" } : transitionOptions,
-		);
-	}, [disableTransition, transitionOptions]);
-
 	// Apply theme whenever it changes
 	useEffect(() => {
 		if (typeof window === "undefined" || !isInitialized) return;
@@ -120,7 +115,7 @@ export function useThemeSwitch({
 		};
 
 		// Apply theme with transition immediately
-		quickApplyTheme(newState, actualTransitionOptions, coords);
+		quickApplyTheme(newState, memoizedTransitionOptions, coords);
 	};
 
 	// Apply a theme preset
@@ -140,7 +135,7 @@ export function useThemeSwitch({
 		};
 
 		// Also apply immediately with transition
-		quickApplyTheme(newState, actualTransitionOptions);
+		quickApplyTheme(newState, memoizedTransitionOptions);
 
 		// Update state
 		setThemeState(newState);
