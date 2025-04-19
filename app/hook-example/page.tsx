@@ -13,7 +13,7 @@ import { Code } from "@/components/ui/code";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function HookExamplePage() {
-	const { theme, setTheme, preset, setPreset, presets } = useThemeSwitch();
+	const { theme, switchPreset, toggleMode, allPresets } = useThemeSwitch();
 
 	return (
 		<div className="container py-10 space-y-8">
@@ -42,13 +42,13 @@ export default function HookExamplePage() {
 
 					<h3 className="text-lg font-semibold">Basic Usage</h3>
 					<Code>
-						{`const { theme, setTheme, preset, setPreset, presets } = useThemeSwitch();
+						{`const { theme, switchPreset, toggleMode, allPresets } = useThemeSwitch();
 
 // Toggle between light/dark
-setTheme(theme === 'light' ? 'dark' : 'light');
+toggleMode();
 
 // Apply a different color preset
-setPreset('blue');`}
+switchPreset('blue');`}
 					</Code>
 				</CardContent>
 			</Card>
@@ -66,14 +66,16 @@ setPreset('blue');`}
 							<h3 className="text-sm font-medium mb-2">Theme Mode</h3>
 							<div className="flex gap-2">
 								<Button
-									variant={theme === "light" ? "default" : "outline"}
-									onClick={() => setTheme("light")}
+									variant={
+										theme.currentMode === "light" ? "default" : "outline"
+									}
+									onClick={() => toggleMode()}
 								>
 									Light
 								</Button>
 								<Button
-									variant={theme === "dark" ? "default" : "outline"}
-									onClick={() => setTheme("dark")}
+									variant={theme.currentMode === "dark" ? "default" : "outline"}
+									onClick={() => toggleMode()}
 								>
 									Dark
 								</Button>
@@ -82,18 +84,20 @@ setPreset('blue');`}
 
 						<div>
 							<h3 className="text-sm font-medium mb-2">
-								Current Preset: {preset}
+								Current Preset: {theme.preset}
 							</h3>
 							<div className="flex flex-wrap gap-2">
-								{presets.slice(0, 5).map((p) => (
-									<Button
-										key={p.id}
-										variant={preset === p.id ? "default" : "outline"}
-										onClick={() => setPreset(p.id)}
-									>
-										{p.label}
-									</Button>
-								))}
+								{Object.entries(allPresets)
+									.slice(0, 5)
+									.map(([id, preset]) => (
+										<Button
+											key={id}
+											variant={theme.preset === id ? "default" : "outline"}
+											onClick={() => switchPreset(id)}
+										>
+											{preset.label}
+										</Button>
+									))}
 							</div>
 						</div>
 					</div>
@@ -117,12 +121,6 @@ setPreset('blue');`}
 							<Code>
 								{`useThemeSwitch({
   defaultPreset: "default",           // Default preset to use
-  transitionOptions: {                // Options for theme transitions
-    type: "fade",                     // "fade" | "circular" | "none"
-    duration: 300,                    // Duration in milliseconds
-    easing: "ease-in-out"             // CSS easing function
-  },
-  disableTransition: false,           // Whether to disable transitions
 });`}
 							</Code>
 
@@ -131,19 +129,6 @@ setPreset('blue');`}
 									<h3 className="text-sm font-semibold">defaultPreset</h3>
 									<p className="text-sm text-muted-foreground">
 										The preset to use when no preset is saved in localStorage.
-									</p>
-								</div>
-								<div>
-									<h3 className="text-sm font-semibold">transitionOptions</h3>
-									<p className="text-sm text-muted-foreground">
-										Configure how theme transitions animate when changing
-										themes.
-									</p>
-								</div>
-								<div>
-									<h3 className="text-sm font-semibold">disableTransition</h3>
-									<p className="text-sm text-muted-foreground">
-										Disable all transitions for immediate theme changes.
 									</p>
 								</div>
 							</div>
@@ -163,48 +148,35 @@ setPreset('blue');`}
 								<div>
 									<h3 className="text-sm font-semibold">theme</h3>
 									<p className="text-sm text-muted-foreground">
-										Current theme mode (&apos;light&apos; or &apos;dark&apos;)
+										Current theme state object with currentMode, preset, and
+										styles properties
+									</p>
+								</div>
+								<div>
+									<h3 className="text-sm font-semibold">toggleMode()</h3>
+									<p className="text-sm text-muted-foreground">
+										Function to toggle between light and dark mode
+									</p>
+								</div>
+								<div>
+									<h3 className="text-sm font-semibold">isInitialized</h3>
+									<p className="text-sm text-muted-foreground">
+										Whether the theme has been initialized
 									</p>
 								</div>
 								<div>
 									<h3 className="text-sm font-semibold">
-										setTheme(mode, coords)
+										switchPreset(presetId)
 									</h3>
-									<p className="text-sm text-muted-foreground">
-										Function to set the theme mode. Optional coords parameter
-										for circular transitions.
-									</p>
-								</div>
-								<div>
-									<h3 className="text-sm font-semibold">preset</h3>
-									<p className="text-sm text-muted-foreground">
-										Current color preset ID
-									</p>
-								</div>
-								<div>
-									<h3 className="text-sm font-semibold">setPreset(presetId)</h3>
 									<p className="text-sm text-muted-foreground">
 										Function to apply a different color preset
 									</p>
 								</div>
 								<div>
-									<h3 className="text-sm font-semibold">styles</h3>
+									<h3 className="text-sm font-semibold">allPresets</h3>
 									<p className="text-sm text-muted-foreground">
-										Current theme styles object
-									</p>
-								</div>
-								<div>
-									<h3 className="text-sm font-semibold">presets</h3>
-									<p className="text-sm text-muted-foreground">
-										Array of all available presets with their IDs and labels
-									</p>
-								</div>
-								<div>
-									<h3 className="text-sm font-semibold">
-										getPresetLabel(presetId)
-									</h3>
-									<p className="text-sm text-muted-foreground">
-										Function to get a human-readable label for a preset ID
+										Record of all available presets with their IDs and
+										configuration
 									</p>
 								</div>
 							</div>
