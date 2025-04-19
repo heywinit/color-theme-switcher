@@ -39,17 +39,32 @@ export async function GET(
 		// Read all files in parallel.
 		const filesWithContent = await Promise.all(
 			registryItem.files.map(async (file) => {
-				// Remove leading './' if present to ensure consistent path resolution
-				const normalizedPath = file.path.startsWith("./")
-					? file.path.slice(2)
-					: file.path;
-				const filePath = path.join(process.cwd(), normalizedPath);
-
 				try {
-					const content = await fs.readFile(filePath, "utf8");
-					return { ...file, content };
+					// In Vercel, we need to use relative imports from the project root
+					// Remove leading './' if present
+					const normalizedPath = file.path.startsWith("./")
+						? file.path.slice(2)
+						: file.path;
+
+					// First try the path as specified in registry
+					let filePath = path.join(process.cwd(), normalizedPath);
+
+					try {
+						const content = await fs.readFile(filePath, "utf8");
+						return { ...file, content };
+					} catch {
+						// If that fails, try with "/colorswitchcn" prefix
+						filePath = path.join(
+							process.cwd(),
+							"colorswitchcn",
+							normalizedPath,
+						);
+						const content = await fs.readFile(filePath, "utf8");
+						return { ...file, content };
+					}
 				} catch (error) {
-					console.error(`Error reading file ${filePath}:`, error);
+					console.error(`Error reading file for path ${file.path}:`, error);
+					console.error(`CWD: ${process.cwd()}`);
 					throw error;
 				}
 			}),

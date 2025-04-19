@@ -3,8 +3,9 @@ import { Providers } from "@/components/providers";
 import "./globals.css";
 
 export const metadata: Metadata = {
-	title: "Color Theme Switcher",
-	description: "A comprehensive color theme switcher for ShadCN UI",
+	title: "ColorSwitchCN",
+	description:
+		"A beautiful, accessible theme switcher component for your shadcn/ui projects with instant theme changes and multiple theme presets.",
 };
 
 export default function RootLayout({
