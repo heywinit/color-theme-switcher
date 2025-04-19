@@ -60,7 +60,7 @@ export function ThemePicker() {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button variant="outline" className="flex items-center gap-2">
+				<Button variant={"outline"} className="flex items-center gap-2">
 					<div className="flex gap-1">
 						<ColorSwatch
 							color={getSafeColor(themeState.styles[mode], "primary")}
@@ -81,7 +81,10 @@ export function ThemePicker() {
 					<ChevronDown className="h-4 w-4 text-muted-foreground" />
 				</Button>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent align="end" className="w-[220px]">
+			<DropdownMenuContent
+				align="end"
+				className="w-[220px] bg-background shadow-lg rounded-md max-h-[300px] overflow-y-auto"
+			>
 				{error && (
 					<>
 						<DropdownMenuLabel className="text-destructive">
@@ -120,8 +123,6 @@ export function ThemePicker() {
 						</DropdownMenuItem>
 					);
 				})}
-
-				<DropdownMenuSeparator />
 			</DropdownMenuContent>
 		</DropdownMenu>
 	);
