@@ -8,6 +8,8 @@ import * as React from "react";
 import { ThemeModeToggle } from "./theme-mode-toggle";
 import { ThemePicker } from "./theme-picker";
 import { cn } from "@/lib/utils";
+import { useTheme } from "@/lib/theme-provider";
+import { useEffect } from "react";
 
 interface ColorThemeSwitcherProps {
 	className?: string;
@@ -23,6 +25,17 @@ export function ColorThemeSwitcher({
 		center: "justify-center",
 		end: "justify-end",
 	};
+
+	// Get theme state from the theme provider
+	const { themeState } = useTheme();
+
+	// Log when theme changes for debugging
+	useEffect(() => {
+		console.log("Theme state updated:", {
+			mode: themeState.currentMode,
+			preset: themeState.preset,
+		});
+	}, [themeState]);
 
 	// Pass down theme mode toggle props
 	const themeModeToggleProps = {
